@@ -14,7 +14,7 @@
 
     init : function (scope, method, options) {
       this.scope = scope || this.scope;
-      Foundation.inherit(this, 'data_options');
+      Foundation.inherit(this, 'data_options throttle');
 
       if (typeof method === 'object') {
         $.extend(true, this.settings, method);
@@ -34,14 +34,17 @@
     events : function () {
       var self = this;
 
-      // resize event, etc...
+      $(window).on('resize.fndtn.graphs', self.throttle(function () {
+        self.build($('[data-graph]'));
+      }, 100));
     },
 
     build : function(legends) {
       var self = this;
 
       legends.each(function () {
-        var legend = $(this), graph;
+        var legend = $(this), graph,
+            old = legend.data('graph-data');
         
         self.data(legend);
 
@@ -79,10 +82,17 @@
 
     update_DOM : function (parts) {
       var legend = parts[0],
+          parent = legend.parent(),
           graph = parts[1],
           html = '<div class="graph-container">' + this.xml_to_string(legend[0]) + '<div class="graph">' + this.xml_to_string(graph) + '</div></div>';
 
-      legend.replaceWith($.parseHTML(html));
+      var initialized = parent.hasClass('graph-container');
+
+      if (!initialized) {
+        return legend.replaceWith($.parseHTML(html));
+      }
+
+      return parent.find('.graph').html(this.xml_to_string(graph));
     },
 
     pie : function (legend) {
@@ -151,8 +161,6 @@
       var graph = document.createElementNS(this.svgns, "svg"),
           size = legend.data('graph-data').graph_size();
 
-      graph.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      graph.setAttribute('version', '1.1');
       graph.setAttribute("width", size.y);
       graph.setAttribute("height", size.y);
       graph.setAttribute("viewBox", "0 0 " + size.y + " " + size.y);
@@ -160,7 +168,7 @@
       return graph;
     },
 
-    xml_to_string : function (xmlData) { 
+    xml_to_string : function (xmlData) {
       var xmlString;
       //IE
       if (window.ActiveXObject){
@@ -173,9 +181,9 @@
       return xmlString;
     },
 
-    off : function () {},
-
-    reflow : function () {}
+    reflow : function () {
+      this.build($('[data-graph]'));
+    }
   };
 
   Array.prototype.graph_size = function() {

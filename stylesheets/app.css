@@ -7313,23 +7313,23 @@ ul[data-graph] {
   border-radius: 3px;
   min-height: 150px;
 }
-/* line 65, ../sass/app.scss */
+/* line 66, ../sass/app.scss */
 ul[data-graph] li:nth-child(1) {
   color: #EA6045;
 }
-/* line 68, ../sass/app.scss */
+/* line 69, ../sass/app.scss */
 ul[data-graph] li:nth-child(2) {
   color: #F8CA4D;
 }
-/* line 71, ../sass/app.scss */
+/* line 72, ../sass/app.scss */
 ul[data-graph] li:nth-child(3) {
   color: #3F5666;
 }
-/* line 74, ../sass/app.scss */
+/* line 75, ../sass/app.scss */
 ul[data-graph] li:nth-child(4) {
   color: #F5E5C0;
 }
-/* line 77, ../sass/app.scss */
+/* line 78, ../sass/app.scss */
 ul[data-graph] li:nth-child(5) {
   color: #2F3440;
 }
