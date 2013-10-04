@@ -37,6 +37,11 @@
       $(window).on('resize.fndtn.graphs', self.throttle(function () {
         self.build($('[data-graph]'));
       }, 100));
+
+      $(document).on('mouseenter mouseleave', '[data-graph] li', function (e) {
+        e.preventDefault();
+        self.animate($(this), $(this).index(), e.type);
+      });
     },
 
     build : function(legends) {
@@ -48,11 +53,7 @@
         
         self.data(legend);
 
-        if (/pie/i.test(legend.data('graph'))) {
-          return self.update_DOM(self.pie(legend));
-        }
-
-        return self.bar(legend);
+        return self.update_DOM(self[legend.data('graph')](legend));
       });
     },
 
@@ -95,6 +96,13 @@
       return parent.find('.graph').html(this.xml_to_string(graph));
     },
 
+    // animate : function (segment, index, event) {
+    //   var svg = sg
+    //   if (/enter/i.test(event)) {
+
+    //   }
+    // }
+
     pie : function (legend) {
       var svg = this.svg(legend),
           data = legend.data('graph-data'),
@@ -111,7 +119,7 @@
         angles[i] = data[i].value / total * Math.PI * 2;
       }
 
-      for(var i = 0; i < data.length; i++) {
+      for (var i = 0; i < data.length; i++) {
         var end_angle = start_angle + angles[i];
         var cx = base / 2,
             cy = base / 2,
@@ -147,11 +155,102 @@
         path.setAttribute("fill", data[i].color);   // Set wedge color
         path.setAttribute("stroke", "#333");   // Outline wedge in black
         path.setAttribute("stroke-width", "2"); // 2 units thick
+        path.setAttribute('data-id', 's' + i);
         svg.appendChild(path);                // Add wedge to chart
 
         // The next wedge begins where this one ends
         start_angle = end_angle;
       }
+
+      return [legend, svg];
+    },
+
+    line : function (legend) {
+      var svg = this.svg(legend),
+          data = legend.data('graph-data'),
+          max = 0,
+          base = data.graph_size().y,
+          interval = base / data.length,
+          x_offset = 0,
+          points = '',
+          circles = [];
+
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].value > max) {
+          max = data[i].value
+        }
+      }
+
+      for (var i = 0; i < data.length; i++) {
+        points += x_offset + ',' + data[i].value + ' ';
+        var circle = document.createElementNS(this.svgns, "circle");
+        circle.setAttribute('cx', x_offset);
+        circle.setAttribute('cy', data[i].value);
+        circle.setAttribute('r', 3);
+        circle.setAttribute('fill', data[i].color);
+        circles.push(circle);
+        x_offset += interval;
+      }
+
+      var polyline = document.createElementNS(this.svgns, "polyline");
+
+      polyline.setAttribute("points", points);
+      polyline.setAttribute("fill", "none");
+      polyline.setAttribute("stroke", "black");
+      polyline.setAttribute("stroke-width", "2");
+
+      svg.appendChild(polyline);
+
+      for (var i = 0; i < circles.length; i++) {
+        svg.appendChild(circles[i]);
+      }
+
+      return [legend, svg];
+    },
+
+    bar : function (legend) {
+      var svg = this.svg(legend),
+          data = legend.data('graph-data'),
+          current_offset = 0,
+          base = data.graph_size().y,
+          spacer = 5,
+          max = 0,
+          total = 0,
+          interval = (base - (data.length * spacer)) / data.length;
+
+      for (var i = 0; i < data.length; i++) {
+        if (max < data[i].value) max = data[i].value;
+        total += data[i].value;
+      }
+
+      var g = document.createElementNS(this.svgns, "g");
+
+      g.setAttribute('transform', 'translate(0, ' + max +') scale(1, -1)');
+
+      for (var i = 0; i < data.length; i++) {
+        var y = base * (data[i].value / base),
+            rect = document.createElementNS(this.svgns, "rect");
+
+        if (current_offset === 0) {
+          var new_offset = current_offset;
+        } else {
+          var new_offset = current_offset + spacer;
+        }
+
+        rect.setAttribute('x', new_offset);
+        rect.setAttribute('y', 0);
+        rect.setAttribute('width', interval);
+        rect.setAttribute('height', y);
+        rect.setAttribute('fill', data[i].color);
+        rect.setAttribute('stroke', '#222222');
+        rect.setAttribute('stroke-width', 2);
+
+        current_offset = new_offset + interval;
+
+        g.appendChild(rect);
+      }
+
+      svg.appendChild(g);
 
       return [legend, svg];
     },
