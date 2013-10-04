@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+
+<head>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Pie</title>
+
+  <link href="stylesheets/app.css" media="screen, projector, print" rel="stylesheet" type="text/css" />
+  <script src="javascripts/vendor/custom.modernizr.js"></script>
+
+</head>
+<body>
+  <div class="row">
+    <div class="large-4 columns">
+      <h3>Graphs</h3>
+      <ul data-graph="pie">
+        <li data-value="10">Water Buffalo</li>
+        <li data-value="6">Bison</li>
+        <li data-value="5">Sheep</li>
+        <li data-value="8">Goat</li>
+        <li data-value="20">Sheep</li>
+      </ul>
+    </div>
+    <div class="large-8 columns">
+      <p>Some content to the right.</p>
+    </div>
+  </div>
+
+  <script src="javascripts/vendor/jquery.js"></script>
+  <script src="javascripts/foundation/foundation.js"></script>
+	<script src="javascripts/foundation/foundation.graphs.js"></script>
+	
+  <script>
+    $(document).foundation();
+  </script>
+</body>
+</html>
