@@ -21,6 +21,7 @@
       }
 
       this.build($('[data-graph]'));
+      this.events();
 
       if (typeof method !== 'string') {
         if (!this.settings.init) { this.events(); }
