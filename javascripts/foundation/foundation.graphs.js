@@ -20,7 +20,7 @@
         $.extend(true, this.settings, method);
       }
 
-      this.build($('[data-graph]'));
+      this.build($('[data-pie-id], [data-bar-id]'));
       this.events();
 
       if (typeof method !== 'string') {
@@ -39,22 +39,24 @@
         self.build($('[data-graph]'));
       }, 100));
 
-      $(document).on('mouseenter mouseleave', '[data-graph] li', function (e) {
-        e.preventDefault();
-        self.animate($(this), $(this).index(), e.type);
-      });
+      // $(document).on('mouseenter mouseleave', '[data-graph] li', function (e) {
+      //   e.preventDefault();
+      //   self.animate($(this), $(this).index(), e.type);
+      // });
     },
 
     build : function(legends) {
       var self = this;
 
       legends.each(function () {
-        var legend = $(this), graph,
-            old = legend.data('graph-data');
-        
+        var legend = $(this), graph;
         self.data(legend);
 
-        return self.update_DOM(self[legend.data('graph')](legend));
+        if (/pie/i.test(legend.data('graph'))) {
+          return self.update_DOM(self.pie(legend));
+        }
+
+        return self.update_DOM(self.bar(legend));
       });
     },
 
@@ -86,23 +88,24 @@
       var legend = parts[0],
           parent = legend.parent(),
           graph = parts[1],
-          html = '<div class="graph-container">' + this.xml_to_string(legend[0]) + '<div class="graph">' + this.xml_to_string(graph) + '</div></div>';
+          graph_id,
+          html = '<div class="graph">' + this.xml_to_string(graph) + '</div>';
 
-      var initialized = parent.hasClass('graph-container');
-
-      if (!initialized) {
-        return legend.replaceWith($.parseHTML(html));
+      if (legend.data('pie-id').length > 0 ) {
+        graph_id = '#' + legend.data('pie-id');
+      } else {
+        graph_id = '#' + legend.data('bar-id');
       }
 
-      return parent.find('.graph').html(this.xml_to_string(graph));
+      return $(graph_id).html($.parseHTML(html));
     },
 
-    // animate : function (segment, index, event) {
-    //   var svg = sg
-    //   if (/enter/i.test(event)) {
-
-    //   }
-    // }
+    animate : function (segment, index, event) {
+      var svg = sg
+      if (/enter/i.test(event)) {
+    
+      }
+    },
 
     pie : function (legend) {
       var svg = this.svg(legend),
@@ -161,49 +164,6 @@
 
         // The next wedge begins where this one ends
         start_angle = end_angle;
-      }
-
-      return [legend, svg];
-    },
-
-    line : function (legend) {
-      var svg = this.svg(legend),
-          data = legend.data('graph-data'),
-          max = 0,
-          base = data.graph_size().y,
-          interval = base / data.length,
-          x_offset = 0,
-          points = '',
-          circles = [];
-
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].value > max) {
-          max = data[i].value
-        }
-      }
-
-      for (var i = 0; i < data.length; i++) {
-        points += x_offset + ',' + data[i].value + ' ';
-        var circle = document.createElementNS(this.svgns, "circle");
-        circle.setAttribute('cx', x_offset);
-        circle.setAttribute('cy', data[i].value);
-        circle.setAttribute('r', 3);
-        circle.setAttribute('fill', data[i].color);
-        circles.push(circle);
-        x_offset += interval;
-      }
-
-      var polyline = document.createElementNS(this.svgns, "polyline");
-
-      polyline.setAttribute("points", points);
-      polyline.setAttribute("fill", "none");
-      polyline.setAttribute("stroke", "black");
-      polyline.setAttribute("stroke-width", "2");
-
-      svg.appendChild(polyline);
-
-      for (var i = 0; i < circles.length; i++) {
-        svg.appendChild(circles[i]);
       }
 
       return [legend, svg];
