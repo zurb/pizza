@@ -20,12 +20,9 @@
       }
 
       this.build($('[data-pie-id], [data-bar-id]'));
-      this.events();
 
       if (typeof method !== 'string') {
-        if (!this.settings.init) { this.events(); }
-
-        return this.settings.init;
+        this.events();
       } else {
         return this[method].call(this, options);
       }
@@ -34,11 +31,11 @@
     events : function () {
       var self = this;
 
-      $(window).on('resize.fndtn.graphs', self.throttle(function () {
+      $(window).off('.graphs').on('resize.graphs', self.throttle(function () {
         self.build($('[data-pie-id], [data-bar-id]'));
       }, 100));
 
-      $(document).on('mouseleave', 'svg path', function (e) {
+      $(document).off('.graphs').on('mouseleave.graphs', 'svg path', function (e) {
         self.reset.call(this, e);
       });
     },
