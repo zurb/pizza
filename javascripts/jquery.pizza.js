@@ -1,5 +1,3 @@
-/*jslint unparam: true, browser: true, indent: 2 */
-
 ;(function ($, window, document, undefined) {
   'use strict';
 
@@ -258,4 +256,4 @@
 
   window.Pizza = Pizza;
 
-}(Foundation.zj, this, this.document));
+}($, this, this.document));
