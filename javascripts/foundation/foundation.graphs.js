@@ -59,13 +59,6 @@
       });
     },
 
-    size : function (legend) {
-      return {
-        x: legend.outerWidth(),
-        y: legend.outerHeight()
-      };
-    },
-
     data : function (legend) {
       var data = [],
           count = 0;
@@ -97,7 +90,7 @@
           total = 0,
           angles = [],
           start_angle = 0,
-          base = this.get_height($(this.identifier(legend))) / 1.15;
+          base = this.get_height($(this.identifier(legend))) - 4;
 
       for (var i = 0; i < data.length; i++) {
         total += data[i].value;
@@ -109,8 +102,8 @@
 
       for (var i = 0; i < data.length; i++) {
         var end_angle = start_angle + angles[i];
-        var cx = (base / 2) + 5,
-            cy = (base / 2) + 5,
+        var cx = (base / 2) + 4,
+            cy = (base / 2) + 4,
             r = (base / 2) - 2;
 
         // Compute the two points where our wedge intersects the circle

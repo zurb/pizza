@@ -79,19 +79,19 @@ ul[data-pie-id], ul[data-bar-id] {
   }
 }
 
-.graph svg path:hover {
-  -moz-animation:r1 0.5s linear;
-  -webkit-animation:r1 0.5s linear;
-  animation:r1 0.5s linear;
-}
+// .graph svg path:hover {
+//   -moz-animation:r1 0.5s linear;
+//   -webkit-animation:r1 0.5s linear;
+//   animation:r1 0.5s linear;
+// }
 
-@-webkit-keyframes r1 {
-  100% { -webkit-transform: translate(-3px,-3px) scale(1.05); }
-}
-@-moz-keyframes r1 {
-  100% { -moz-transform: translate(-3px,-3px) scale(1.05); }
-}
-@keyframes r1 {
-  100% { transform: translate(-3px,-3px) scale(1.05); }
-}
+// @-webkit-keyframes r1 {
+//   100% { -webkit-transform: translate(-3px,-3px) scale(1.05); }
+// }
+// @-moz-keyframes r1 {
+//   100% { -moz-transform: translate(-3px,-3px) scale(1.05); }
+// }
+// @keyframes r1 {
+//   100% { transform: translate(-3px,-3px) scale(1.05); }
+// }
 
