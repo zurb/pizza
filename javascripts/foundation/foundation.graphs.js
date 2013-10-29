@@ -36,13 +36,13 @@
       var self = this;
 
       $(window).on('resize.fndtn.graphs', self.throttle(function () {
-        self.build($('[data-graph]'));
+        self.build($('[data-pie-id], [data-bar-id]'));
       }, 100));
 
-      // $(document).on('mouseenter mouseleave', '[data-graph] li', function (e) {
-      //   e.preventDefault();
-      //   self.animate($(this), $(this).index(), e.type);
-      // });
+      $(document).on('mouseenter mouseleave', 'svg path', function (e) {
+        e.preventDefault();
+        self.animate.call(this, e);
+      });
     },
 
     build : function(legends) {
@@ -52,11 +52,11 @@
         var legend = $(this), graph;
         self.data(legend);
 
-        if (/pie/i.test(legend.data('graph'))) {
-          return self.update_DOM(self.pie(legend));
+        if (legend.data('bar-id')) {
+          return self.update_DOM(self.bar(legend));
         }
 
-        return self.update_DOM(self.bar(legend));
+        return self.update_DOM(self.pie(legend));
       });
     },
 
@@ -71,7 +71,7 @@
       var data = [],
           count = 0;
 
-      legend.find('li').each(function () {
+      $('li', legend).each(function () {
         var segment = $(this);
 
         data.push({
@@ -86,25 +86,10 @@
 
     update_DOM : function (parts) {
       var legend = parts[0],
-          parent = legend.parent(),
           graph = parts[1],
-          graph_id,
           html = '<div class="graph">' + this.xml_to_string(graph) + '</div>';
 
-      if (legend.data('pie-id').length > 0 ) {
-        graph_id = '#' + legend.data('pie-id');
-      } else {
-        graph_id = '#' + legend.data('bar-id');
-      }
-
-      return $(graph_id).html($.parseHTML(html));
-    },
-
-    animate : function (segment, index, event) {
-      var svg = sg
-      if (/enter/i.test(event)) {
-    
-      }
+      return $(this.identifier(legend)).html($.parseHTML(html));
     },
 
     pie : function (legend) {
@@ -113,7 +98,7 @@
           total = 0,
           angles = [],
           start_angle = 0,
-          base = data.graph_size().y;
+          base = $(this.identifier(legend)).width() / 1.15;
 
       for (var i = 0; i < data.length; i++) {
         total += data[i].value;
@@ -125,8 +110,8 @@
 
       for (var i = 0; i < data.length; i++) {
         var end_angle = start_angle + angles[i];
-        var cx = base / 2,
-            cy = base / 2,
+        var cx = (base / 2) + 5,
+            cy = (base / 2) + 5,
             r = (base / 2) - 2;
 
         // Compute the two points where our wedge intersects the circle
@@ -216,16 +201,31 @@
       return [legend, svg];
     },
 
+    animate : function (e) {
+      if (/enter/i.test(e.type)) {
+        return this.setAttribute('transform', 'translate(-3,-3) scale(1.05)');
+      }
+
+      return this.setAttribute('transform', 'translate(0,0) scale(1)');
+    },
+
     svg : function (legend) {
       this.svgns = "http://www.w3.org/2000/svg";
       var graph = document.createElementNS(this.svgns, "svg"),
-          size = legend.data('graph-data').graph_size();
+          size = $(this.identifier(legend)).width();
 
-      graph.setAttribute("width", size.y);
-      graph.setAttribute("height", size.y);
-      graph.setAttribute("viewBox", "0 0 " + size.y + " " + size.y);
+      graph.setAttribute("width", size);
+      graph.setAttribute("height", size);
 
       return graph;
+    },
+
+    identifier : function (legend) {
+      if (legend.data('pie-id').length > 0 ) {
+        return '#' + legend.data('pie-id');
+      }
+      
+      return '#' + legend.data('bar-id');
     },
 
     xml_to_string : function (xmlData) {
