@@ -54,7 +54,7 @@
 // @import "foundation/components/tooltips";
 // @import "foundation/components/dropdown";
 
-ul[data-graph] {
+ul[data-pie-id], ul[data-bar-id] {
   background: #efefef;
   border: 1px solid #e1e1e1;
   float: right;
