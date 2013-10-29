@@ -39,9 +39,8 @@
         self.build($('[data-pie-id], [data-bar-id]'));
       }, 100));
 
-      $(document).on('mouseenter mouseleave', 'svg path', function (e) {
-        e.preventDefault();
-        self.animate.call(this, e);
+      $(document).on('mouseleave', 'svg path', function (e) {
+        self.reset.call(this, e);
       });
     },
 
@@ -98,7 +97,7 @@
           total = 0,
           angles = [],
           start_angle = 0,
-          base = $(this.identifier(legend)).width() / 1.15;
+          base = this.get_height($(this.identifier(legend))) / 1.15;
 
       for (var i = 0; i < data.length; i++) {
         total += data[i].value;
@@ -158,11 +157,13 @@
       var svg = this.svg(legend),
           data = legend.data('graph-data'),
           current_offset = 0,
-          base = data.graph_size().y,
+          container = $(this.identifier(legend)),
+          base_width = container.width() / 1.15,
+          base_height = this.get_height(container),
           spacer = 5,
           max = 0,
           total = 0,
-          interval = (base - (data.length * spacer)) / data.length;
+          interval = (base_width - (data.length * spacer)) / data.length;
 
       for (var i = 0; i < data.length; i++) {
         if (max < data[i].value) max = data[i].value;
@@ -171,10 +172,10 @@
 
       var g = document.createElementNS(this.svgns, "g");
 
-      g.setAttribute('transform', 'translate(0, ' + max +') scale(1, -1)');
+      g.setAttribute('transform', 'translate(0, ' + (base_height - 2) +') scale(1, -1)');
 
       for (var i = 0; i < data.length; i++) {
-        var y = base * (data[i].value / base),
+        var y = (base_height - 5) * (data[i].value / max),
             rect = document.createElementNS(this.svgns, "rect");
 
         if (current_offset === 0) {
@@ -183,7 +184,7 @@
           var new_offset = current_offset + spacer;
         }
 
-        rect.setAttribute('x', new_offset);
+        rect.setAttribute('x', new_offset + 5);
         rect.setAttribute('y', 0);
         rect.setAttribute('width', interval);
         rect.setAttribute('height', y);
@@ -201,27 +202,36 @@
       return [legend, svg];
     },
 
-    animate : function (e) {
-      if (/enter/i.test(e.type)) {
-        return this.setAttribute('transform', 'translate(-3,-3) scale(1.05)');
-      }
-
+    reset : function (e) {
       return this.setAttribute('transform', 'translate(0,0) scale(1)');
     },
 
     svg : function (legend) {
       this.svgns = "http://www.w3.org/2000/svg";
       var graph = document.createElementNS(this.svgns, "svg"),
-          size = $(this.identifier(legend)).width();
+          container = $(this.identifier(legend)),
+          width = container.width(),
+          height = this.get_height(container);
 
-      graph.setAttribute("width", size);
-      graph.setAttribute("height", size);
+      graph.setAttribute("width", width);
+      graph.setAttribute("height", height);
 
       return graph;
     },
 
+    get_height : function (el) {
+      var height = el.height(),
+          width = el.width();
+
+      if (height < 1) {
+        return height = width; 
+      }
+
+      return height;
+    },
+
     identifier : function (legend) {
-      if (legend.data('pie-id').length > 0 ) {
+      if (legend.data('pie-id')) {
         return '#' + legend.data('pie-id');
       }
       
@@ -246,8 +256,57 @@
     }
   };
 
-  Array.prototype.graph_size = function() {
-    return Foundation.libs.graphs.size(this[0].segment.parent());
-  };
-
 }(Foundation.zj, this, this.document));
+
+
+// Options:
+// - centerX, centerY: coordinates for the center of the circle    
+// - startDegrees, endDegrees: fill between these angles, clockwise
+// - innerRadius, outerRadius: distance from the center
+// - thickness: distance between innerRadius and outerRadius
+//   You should only specify two out of three of the radii and thickness
+function annularSector(path,options){
+  var opts = optionsWithDefaults(options);
+  var p = [ // points
+    [opts.cx + opts.r2*Math.cos(opts.startRadians),
+     opts.cy + opts.r2*Math.sin(opts.startRadians)],
+    [opts.cx + opts.r2*Math.cos(opts.closeRadians),
+     opts.cy + opts.r2*Math.sin(opts.closeRadians)],
+    [opts.cx + opts.r1*Math.cos(opts.closeRadians),
+     opts.cy + opts.r1*Math.sin(opts.closeRadians)],
+    [opts.cx + opts.r1*Math.cos(opts.startRadians),
+     opts.cy + opts.r1*Math.sin(opts.startRadians)],
+  ];
+
+  var angleDiff = opts.closeRadians - opts.startRadians;
+  var largeArc = (angleDiff % (Math.PI*2)) > Math.PI ? 1 : 0;
+  var cmds = [];
+  cmds.push("M"+p[0].join());                                // Move to P0
+  cmds.push("A"+[opts.r2,opts.r2,0,largeArc,1,p[1]].join()); // Arc to  P1
+  cmds.push("L"+p[2].join());                                // Line to P2
+  cmds.push("A"+[opts.r1,opts.r1,0,largeArc,0,p[3]].join()); // Arc to  P3
+  cmds.push("z");                                // Close path (Line to P0)
+  path.setAttribute('d',cmds.join(' '));
+
+  function optionsWithDefaults(o){
+    // Create a new object so that we don't mutate the original
+    var o2 = {
+      cx           : o.centerX || 0,
+      cy           : o.centerY || 0,
+      startRadians : (o.startDegrees || 0) * Math.PI/180,
+      closeRadians : (o.endDegrees   || 0) * Math.PI/180,
+    };
+
+    var t = o.thickness!==undefined ? o.thickness : 100;
+    if (o.innerRadius!==undefined)      o2.r1 = o.innerRadius;
+    else if (o.outerRadius!==undefined) o2.r1 = o.outerRadius - t;
+    else                                o2.r1 = 200           - t;
+    if (o.outerRadius!==undefined)      o2.r2 = o.outerRadius;
+    else                                o2.r2 = o2.r1         + t;
+
+    if (o2.r1<0) o2.r1 = 0;
+    if (o2.r2<0) o2.r2 = 0;
+
+    return o2;
+  }
+}
