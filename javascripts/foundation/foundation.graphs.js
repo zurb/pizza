@@ -244,7 +244,7 @@
     },
 
     reflow : function () {
-      this.build($('[data-graph]'));
+      this.build($('[data-pie-id], [data-bar-id]'));
     },
 
     throttle : function(fun, delay) {
