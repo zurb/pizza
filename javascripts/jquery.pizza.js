@@ -17,7 +17,7 @@
         $.extend(true, this.settings, method);
       }
 
-      this.build($('[data-pie-id], [data-bar-id]'));
+      this.build($('[data-pie-id]'));
 
       if (typeof method !== 'string') {
         this.events();
@@ -30,12 +30,12 @@
       var self = this;
 
       $(window).off('.graphs').on('resize.graphs', self.throttle(function () {
-        self.build($('[data-pie-id], [data-bar-id]'));
+        self.build($('[data-pie-id]'));
       }, 100));
 
-      $(document).off('.graphs').on('mouseleave.graphs', 'svg path', function (e) {
-        self.reset.call(this, e);
-      });
+      // $(document).off('.graphs').on('mouseleave.graphs', 'svg path', function (e) {
+      //   self.reset.call(this, e);
+      // });
     },
 
     build : function(legends) {
@@ -72,10 +72,9 @@
 
     update_DOM : function (parts) {
       var legend = parts[0],
-          graph = parts[1],
-          html = '<div class="graph">' + this.xml_to_string(graph) + '</div>';
+          graph = parts[1];
 
-      return $(this.identifier(legend)).html($.parseHTML(html));
+      return $(this.identifier(legend)).html(graph);
     },
 
     pie : function (legend) {
@@ -113,10 +112,6 @@
         var big = 0;
         if (end_angle - start_angle > Math.PI) big = 1;
 
-        // We describe a wedge with an <svg:path> element
-        // Notice that we create this with createElementNS()
-        var path = document.createElementNS(this.svgns, "path");
-
         // This string holds the path details
         var d = "M" + cx + "," + cy +  // Start at circle center
             " L" + x1 + "," + y1 +     // Draw line to (x1,y1)
@@ -125,68 +120,36 @@
             x2 + "," + y2 +            // Arc goes to to (x2,y2)
             " Z";                      // Close path back to (cx,cy)
 
-        // Now set attributes on the <svg:path> element
-        path.setAttribute("d", d);              // Set this path 
-        path.setAttribute("fill", data[i].color);   // Set wedge color
-        path.setAttribute("stroke", "#333");   // Outline wedge in black
-        path.setAttribute("stroke-width", "2"); // 2 units thick
-        path.setAttribute('data-id', 's' + i);
-        svg.appendChild(path);                // Add wedge to chart
+        var path = svg.path();
+
+        path.attr({
+          d: d,
+          fill: data[i].color,
+          stroke: '#333'
+        });
+
+        this.animate(path);
 
         // The next wedge begins where this one ends
         start_angle = end_angle;
       }
 
-      return [legend, svg];
+      return [legend, svg.node];
     },
 
-    bar : function (legend) {
-      var svg = this.svg(legend),
-          data = legend.data('graph-data'),
-          current_offset = 0,
-          container = $(this.identifier(legend)),
-          base_width = container.width() / 1.15,
-          base_height = this.get_height(container),
-          spacer = 5,
-          max = 0,
-          total = 0,
-          interval = (base_width - (data.length * spacer)) / data.length;
-
-      for (var i = 0; i < data.length; i++) {
-        if (max < data[i].value) max = data[i].value;
-        total += data[i].value;
-      }
-
-      var g = document.createElementNS(this.svgns, "g");
-
-      g.setAttribute('transform', 'translate(0, ' + (base_height - 2) +') scale(1, -1)');
-
-      for (var i = 0; i < data.length; i++) {
-        var y = (base_height - 5) * (data[i].value / max),
-            rect = document.createElementNS(this.svgns, "rect");
-
-        if (current_offset === 0) {
-          var new_offset = current_offset;
-        } else {
-          var new_offset = current_offset + spacer;
-        }
-
-        rect.setAttribute('x', new_offset + 5);
-        rect.setAttribute('y', 0);
-        rect.setAttribute('width', interval);
-        rect.setAttribute('height', y);
-        rect.setAttribute('fill', data[i].color);
-        rect.setAttribute('stroke', '#222222');
-        rect.setAttribute('stroke-width', 2);
-
-        current_offset = new_offset + interval;
-
-        g.appendChild(rect);
-      }
-
-      svg.appendChild(g);
-
-      return [legend, svg];
+    animate : function (el) {
+      el.hover(function (e) {
+        var path = Snap(e.target);
+        console.log(path.transform())
+        path.animate({
+          transform: 'r1.2'
+        }, 500, mina.elastic);
+      }, function (e) {
+        var path = Snap(e.target);
+        path.animate({
+          transform: 'r1'
+        }, 500, mina.elastic);
+      });
     },
 
     reset : function (e) {
@@ -194,16 +157,16 @@
     },
 
     svg : function (legend) {
-      this.svgns = "http://www.w3.org/2000/svg";
-      var graph = document.createElementNS(this.svgns, "svg"),
-          container = $(this.identifier(legend)),
+      var container = $(this.identifier(legend)),
+          svg = $('svg', container),
           width = container.width(),
           height = this.get_height(container);
 
-      graph.setAttribute("width", width);
-      graph.setAttribute("height", height);
+      if (svg.length > 0) {
+        return Snap(svg[0]);
+      }
 
-      return graph;
+      return Snap(width, height);
     },
 
     get_height : function (el) {
@@ -225,21 +188,8 @@
       return '#' + legend.data('bar-id');
     },
 
-    xml_to_string : function (xmlData) {
-      var xmlString;
-      //IE
-      if (window.ActiveXObject){
-        xmlString = xmlData.xml;
-      }
-      // code for Mozilla, Firefox, Opera, etc.
-      else {
-        xmlString = (new XMLSerializer()).serializeToString(xmlData);
-      }
-      return xmlString;
-    },
-
     reflow : function () {
-      this.build($('[data-pie-id], [data-bar-id]'));
+      this.build($('[data-pie-id]'));
     },
 
     throttle : function(fun, delay) {
