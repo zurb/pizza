@@ -33,9 +33,19 @@
         self.build($('[data-pie-id]'));
       }, 100));
 
-      // $(document).off('.graphs').on('mouseleave.graphs', 'svg path', function (e) {
-      //   self.reset.call(this, e);
-      // });
+      $(document).off('.graphs').on('mouseenter.graphs mouseleave.graphs', '[data-pie-id] li', function (e) {
+        var path = Snap($('path[data-id="s' + $(this).index() + '"]')[0]);
+
+        if (/enter/i.test(e.type)) {
+          return path.animate({
+            transform: 's1.05 1.05 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
+          }, 500, mina.elastic);
+        }
+
+        return path.animate({
+          transform: ''
+        }, 500, mina.elastic);
+      });
     },
 
     build : function(legends) {
@@ -85,6 +95,8 @@
           start_angle = 0,
           base = $(this.identifier(legend)).width() - 4;
 
+      $('path', svg.node).remove();
+
       for (var i = 0; i < data.length; i++) {
         total += data[i].value;
       }
@@ -97,7 +109,7 @@
         var end_angle = start_angle + angles[i];
         var cx = (base / 2) + 4,
             cy = (base / 2) + 4,
-            r = (base / 2) - 2;
+            r = ((base / 2) * 0.95) - 2;
 
         // Compute the two points where our wedge intersects the circle
         // These formulas are chosen so that an angle of 0 is at 12 o'clock
@@ -128,7 +140,11 @@
           stroke: '#333'
         });
 
-        this.animate(path);
+        path.node.setAttribute('data-id', 's' + i);
+        path.node.setAttribute('data-cx', cx);
+        path.node.setAttribute('data-cy', cy);
+
+        this.animate(path, cx, cy);
 
         // The next wedge begins where this one ends
         start_angle = end_angle;
@@ -137,23 +153,20 @@
       return [legend, svg.node];
     },
 
-    animate : function (el) {
+    animate : function (el, cx, cy) {
       el.hover(function (e) {
         var path = Snap(e.target);
-        console.log(path.transform())
+
         path.animate({
-          transform: 'r1.2'
+          transform: 's1.05 1.05 ' + cx + ' ' + cy
         }, 500, mina.elastic);
       }, function (e) {
         var path = Snap(e.target);
+
         path.animate({
-          transform: 'r1'
+          transform: ''
         }, 500, mina.elastic);
       });
-    },
-
-    reset : function (e) {
-      // return this.setAttribute('transform', 'translate(0,0) scale(1)');
     },
 
     svg : function (legend) {
