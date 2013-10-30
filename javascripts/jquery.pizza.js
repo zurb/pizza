@@ -10,6 +10,7 @@
       percent_offset: 35, //in pixels relative to radius of pie chart
       stroke_color: '#333',
       stroke_width: 1,
+      show_percent: false,
       animation_speed: 500,
       animation_type: 'elastic' // options: backin, backout, bounce, easein, easeinout, easeout, linear
     },
@@ -46,9 +47,12 @@
           path.animate({
             transform: 's1.05 1.05 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
           }, self.settings.animation_speed, mina[self.settings.animation_type]);
-          text.animate({
-            opacity: 1
-          }, self.settings.animation_speed);
+
+          if (self.settings.show_percent) {
+            text.animate({
+              opacity: 1
+            }, self.settings.animation_speed);
+          }
         } else {
           path.animate({
             transform: ''
@@ -192,9 +196,12 @@
         path.animate({
           transform: 's1.05 1.05 ' + cx + ' ' + cy
         }, self.settings.animation_speed, mina[self.settings.animation_type]);
-        text.animate({
-          opacity: 1
-        }, self.settings.animation_speed);
+
+        if (self.settings.show_percent) {
+          text.animate({
+            opacity: 1
+          }, self.settings.animation_speed);
+        }
       }, function (e) {
         var path = Snap(e.target),
             text = Snap($(path.node).parent()
