@@ -88,6 +88,8 @@
     },
 
     pie : function (legend) {
+      // pie chart concept from JavaScript the 
+      // Definitive Guide 6th edition by David Flanagan
       var svg = this.svg(legend),
           data = legend.data('graph-data'),
           total = 0,
@@ -95,7 +97,7 @@
           start_angle = 0,
           base = $(this.identifier(legend)).width() - 4;
 
-      $('path', svg.node).remove();
+      $('path, text', svg.node).remove();
 
       for (var i = 0; i < data.length; i++) {
         total += data[i].value;
@@ -107,9 +109,9 @@
 
       for (var i = 0; i < data.length; i++) {
         var end_angle = start_angle + angles[i];
-        var cx = (base / 2) + 4,
-            cy = (base / 2) + 4,
-            r = ((base / 2) * 0.95) - 2;
+        var cx = (base / 2),
+            cy = (base / 2),
+            r = ((base / 2) * 0.85);
 
         // Compute the two points where our wedge intersects the circle
         // These formulas are chosen so that an angle of 0 is at 12 o'clock
@@ -133,6 +135,11 @@
             " Z";                      // Close path back to (cx,cy)
 
         var path = svg.path();
+        var percent = (data[i].value / total) * 100.0;
+
+        // thanks to Raphael.js
+        path.paper.text(cx + (r + 40) * Math.sin(start_angle + (angles[i] / 2)),
+         cy - (r + 40) * Math.cos(start_angle + (angles[i] / 2)), Math.ceil(percent) + '%');
 
         path.attr({
           d: d,
@@ -143,6 +150,9 @@
         path.node.setAttribute('data-id', 's' + i);
         path.node.setAttribute('data-cx', cx);
         path.node.setAttribute('data-cy', cy);
+        path.node.setAttribute('data-percent', percent);
+
+        window.path = path.node;
 
         this.animate(path, cx, cy);
 

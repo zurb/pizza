@@ -7304,7 +7304,7 @@ a.th {
 }
 
 /* line 57, ../sass/app.scss */
-ul[data-pie-id], ul[data-bar-id] {
+ul[data-pie-id] {
   background: #efefef;
   border: 1px solid #e1e1e1;
   float: right;
@@ -7313,22 +7313,29 @@ ul[data-pie-id], ul[data-bar-id] {
   border-radius: 3px;
 }
 /* line 65, ../sass/app.scss */
-ul[data-pie-id] li:nth-child(1), ul[data-bar-id] li:nth-child(1) {
+ul[data-pie-id] li:nth-child(1) {
   color: #EA6045;
 }
 /* line 68, ../sass/app.scss */
-ul[data-pie-id] li:nth-child(2), ul[data-bar-id] li:nth-child(2) {
+ul[data-pie-id] li:nth-child(2) {
   color: #F8CA4D;
 }
 /* line 71, ../sass/app.scss */
-ul[data-pie-id] li:nth-child(3), ul[data-bar-id] li:nth-child(3) {
+ul[data-pie-id] li:nth-child(3) {
   color: #3F5666;
 }
 /* line 74, ../sass/app.scss */
-ul[data-pie-id] li:nth-child(4), ul[data-bar-id] li:nth-child(4) {
+ul[data-pie-id] li:nth-child(4) {
   color: #F5E5C0;
 }
 /* line 77, ../sass/app.scss */
-ul[data-pie-id] li:nth-child(5), ul[data-bar-id] li:nth-child(5) {
+ul[data-pie-id] li:nth-child(5) {
   color: #2F3440;
+}
+
+/* line 82, ../sass/app.scss */
+svg text {
+  background: #eee;
+  color: #333;
+  font-size: .9em;
 }
