@@ -7,7 +7,11 @@
     version : '1.0.0',
 
     settings : {
-
+      percent_offset: 35, //in pixels relative to radius of pie chart
+      stroke_color: '#333',
+      stroke_width: 1,
+      animation_speed: 500,
+      animation_type: 'elastic' // options: backin, backout, bounce, easein, easeinout, easeout, linear
     },
 
     init : function (scope, method, options) {
@@ -41,17 +45,17 @@
         if (/enter/i.test(e.type)) {
           path.animate({
             transform: 's1.05 1.05 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
-          }, 500, mina.elastic);
+          }, self.settings.animation_speed, mina[self.settings.animation_type]);
           text.animate({
             opacity: 1
-          }, 500);
+          }, self.settings.animation_speed);
         } else {
           path.animate({
             transform: ''
-          }, 500, mina.elastic);
+          }, self.settings.animation_speed, mina[self.settings.animation_type]);
           text.animate({
             opacity: 0
-          }, 500);
+          }, self.settings.animation_speed);
         }
       });
     },
@@ -146,8 +150,8 @@
         var percent = (data[i].value / total) * 100.0;
 
         // thanks to Raphael.js
-        var text = path.paper.text(cx + (r + 40) * Math.sin(start_angle + (angles[i] / 2)),
-         cy - (r + 40) * Math.cos(start_angle + (angles[i] / 2)), Math.ceil(percent) + '%');
+        var text = path.paper.text(cx + (r + this.settings.percent_offset) * Math.sin(start_angle + (angles[i] / 2)),
+         cy - (r + this.settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2)), Math.ceil(percent) + '%');
 
         var left_offset = text.getBBox().width / 2;
 
@@ -157,19 +161,17 @@
         });
 
         text.node.setAttribute('data-id', 's' + i);
+        path.node.setAttribute('data-cx', cx);
+        path.node.setAttribute('data-cy', cy);
 
         path.attr({
           d: d,
           fill: data[i].color,
-          stroke: '#333'
+          stroke: this.settings.stroke_color,
+          strokeWidth: this.settings.stroke_width
         });
 
         path.node.setAttribute('data-id', 's' + i);
-        path.node.setAttribute('data-cx', cx);
-        path.node.setAttribute('data-cy', cy);
-        path.node.setAttribute('data-percent', percent);
-
-        window.path = path.node;
 
         this.animate(path, cx, cy);
 
@@ -181,6 +183,7 @@
     },
 
     animate : function (el, cx, cy) {
+      var self = this;
       el.hover(function (e) {
         var path = Snap(e.target),
             text = Snap($(path.node).parent()
@@ -188,10 +191,10 @@
 
         path.animate({
           transform: 's1.05 1.05 ' + cx + ' ' + cy
-        }, 500, mina.elastic);
+        }, self.settings.animation_speed, mina[self.settings.animation_type]);
         text.animate({
           opacity: 1
-        }, 500);
+        }, self.settings.animation_speed);
       }, function (e) {
         var path = Snap(e.target),
             text = Snap($(path.node).parent()
@@ -199,10 +202,10 @@
 
         path.animate({
           transform: ''
-        }, 500, mina.elastic);
+        }, self.settings.animation_speed, mina[self.settings.animation_type]);
         text.animate({
           opacity: 0
-        }, 500);
+        }, self.settings.animation_speed);
       });
     },
 
@@ -210,24 +213,17 @@
       var container = $(this.identifier(legend)),
           svg = $('svg', container),
           width = container.width(),
-          height = this.get_height(container);
+          height = width;
 
       if (svg.length > 0) {
-        return Snap(svg[0]);
+        svg = Snap(svg[0]);
+      } else {
+        svg = Snap(width, height);
       }
-
-      return Snap(width, height);
-    },
-
-    get_height : function (el) {
-      var height = el.height(),
-          width = el.width();
-
-      if (height < 1) {
-        return height = width; 
-      }
-
-      return height;
+      svg.node.setAttribute('width', width);
+      svg.node.setAttribute('height', height);
+      svg.node.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+      return svg;
     },
 
     identifier : function (legend) {

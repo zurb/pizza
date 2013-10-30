@@ -7305,12 +7305,9 @@ a.th {
 
 /* line 57, ../sass/app.scss */
 ul[data-pie-id] {
-  background: #efefef;
-  border: 1px solid #e1e1e1;
   float: right;
   list-style: none;
   padding: 10px;
-  border-radius: 3px;
 }
 /* line 65, ../sass/app.scss */
 ul[data-pie-id] li:nth-child(1) {
@@ -7338,4 +7335,9 @@ svg text {
   background: #eee;
   color: #333;
   font-size: .9em;
+}
+
+/* line 88, ../sass/app.scss */
+svg {
+  overflow: visible;
 }
