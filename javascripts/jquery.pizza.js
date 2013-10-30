@@ -34,17 +34,25 @@
       }, 100));
 
       $(document).off('.graphs').on('mouseenter.graphs mouseleave.graphs', '[data-pie-id] li', function (e) {
-        var path = Snap($('path[data-id="s' + $(this).index() + '"]')[0]);
+        var path = Snap($('path[data-id="s' + $(this).index() + '"]')[0]),
+            text = Snap($(path.node).parent()
+              .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]);
 
         if (/enter/i.test(e.type)) {
-          return path.animate({
+          path.animate({
             transform: 's1.05 1.05 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
           }, 500, mina.elastic);
+          text.animate({
+            opacity: 1
+          }, 500);
+        } else {
+          path.animate({
+            transform: ''
+          }, 500, mina.elastic);
+          text.animate({
+            opacity: 0
+          }, 500);
         }
-
-        return path.animate({
-          transform: ''
-        }, 500, mina.elastic);
       });
     },
 
@@ -138,8 +146,17 @@
         var percent = (data[i].value / total) * 100.0;
 
         // thanks to Raphael.js
-        path.paper.text(cx + (r + 40) * Math.sin(start_angle + (angles[i] / 2)),
+        var text = path.paper.text(cx + (r + 40) * Math.sin(start_angle + (angles[i] / 2)),
          cy - (r + 40) * Math.cos(start_angle + (angles[i] / 2)), Math.ceil(percent) + '%');
+
+        var left_offset = text.getBBox().width / 2;
+
+        text.attr({
+          x: text.attr('x') - left_offset,
+          opacity: 0
+        });
+
+        text.node.setAttribute('data-id', 's' + i);
 
         path.attr({
           d: d,
@@ -165,17 +182,27 @@
 
     animate : function (el, cx, cy) {
       el.hover(function (e) {
-        var path = Snap(e.target);
+        var path = Snap(e.target),
+            text = Snap($(path.node).parent()
+              .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]);
 
         path.animate({
           transform: 's1.05 1.05 ' + cx + ' ' + cy
         }, 500, mina.elastic);
+        text.animate({
+          opacity: 1
+        }, 500);
       }, function (e) {
-        var path = Snap(e.target);
+        var path = Snap(e.target),
+            text = Snap($(path.node).parent()
+              .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]);
 
         path.animate({
           transform: ''
         }, 500, mina.elastic);
+        text.animate({
+          opacity: 0
+        }, 500);
       });
     },
 
