@@ -7342,3 +7342,9 @@ a.th {
 [data-pie-id] li:nth-child(6) {
   color: #ff0033;
 }
+
+/* line 91, ../sass/app.scss */
+ul[data-pie-id] {
+  list-style: none;
+  padding: 10px;
+}

@@ -88,12 +88,8 @@ $i: 0;
 
 
 
-// ul[data-graph] {
-//   background: $key-background;
-//   border: 1px solid #e1e1e1;
-//   float: right;
-//   list-style: none;
-//   padding: 10px;
-//   border-radius: 3px;
-// }
+ul[data-pie-id] {
+  list-style: none;
+  padding: 10px;
+}
 
