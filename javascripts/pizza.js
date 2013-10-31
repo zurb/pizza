@@ -72,7 +72,7 @@
           }
         } else {
           path.animate({
-            transform: ''
+            transform: 's1 1 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
           }, settings.animation_speed, mina[settings.animation_type]);
           text.animate({
             opacity: 0
@@ -267,7 +267,7 @@
               .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]);
 
         path.animate({
-          transform: ''
+          transform: 's1 1 ' + cx + ' ' + cy
         }, settings.animation_speed, mina[settings.animation_type]);
 
         text.animate({
