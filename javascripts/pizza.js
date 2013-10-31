@@ -22,7 +22,7 @@
 
       var pies = $('[data-pie-id]', this.scope);
 
-      if (pies.length > 1) {
+      if (pies.length > 0) {
         pies.each(function () {
           return self.build($(this), options);
         });
@@ -85,6 +85,7 @@
       var self = this;
 
       var legend = legends, graph;
+
       legend.data('settings', $.extend({}, self.settings, options, legend.data('options')));
       self.data(legend, options || {});
 
@@ -346,11 +347,7 @@
     },
 
     identifier : function (legend) {
-      if (legend.data('pie-id')) {
-        return '#' + legend.data('pie-id');
-      }
-      
-      return '#' + legend.data('bar-id');
+      return '#' + legend.data('pie-id');
     },
 
     throttle : function(fun, delay) {
