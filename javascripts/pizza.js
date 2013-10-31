@@ -2,8 +2,6 @@
   'use strict';
 
   var Pizza = {
-    name : 'graphs',
-
     version : '0.0.1',
 
     settings : {
@@ -38,11 +36,11 @@
     events : function () {
       var self = this;
 
-      $(window).off('.graphs').on('resize.graphs', self.throttle(function () {
+      $(window).off('.pizza').on('resize.pizza', self.throttle(function () {
         self.init();
       }, 100));
 
-      $(this.scope).off('.graphs').on('mouseenter.graphs mouseleave.graphs touchend.graphs', '[data-pie-id] li', function (e) {
+      $(this.scope).off('.pizza').on('mouseenter.pizaa mouseleave.pizza touchend.pizza', '[data-pie-id] li', function (e) {
         var parent = $(this).parent(),
             path = Snap($('#' + parent.data('pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0]),
             text = Snap($(path.node).parent()
