@@ -22,6 +22,8 @@
 
       var pies = $('[data-pie-id]', this.scope);
 
+      $.extend(true, this.settings, options)
+
       if (pies.length > 0) {
         pies.each(function () {
           return self.build($(this), options);
@@ -289,11 +291,11 @@
         svg = Snap(width, height);
       }
 
-      svg.node.setAttribute('width', width);
-      svg.node.setAttribute('height', height);
-      svg.node.setAttribute('viewBox', '-10 -10 ' + 
-        (width + (settings.percent_offset / 1.5)) + ' ' + 
-        (height + (settings.percent_offset / 1.3)));
+      svg.node.setAttribute('width', width + settings.percent_offset);
+      svg.node.setAttribute('height', height + settings.percent_offset);
+      svg.node.setAttribute('viewBox', '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
+        (width + (settings.percent_offset * 1.5)) + ' ' + 
+        (height + (settings.percent_offset * 1.5)));
 
       return svg;
     },
