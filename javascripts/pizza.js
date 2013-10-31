@@ -8,13 +8,14 @@
 
     settings : {
       donut: false,
-      donut_inner_ratio: 0.4, // between 0 and 1
-      percent_offset: 35, // relative to radius
+      donut_inner_ratio: 0.4,   // between 0 and 1
+      percent_offset: 35,       // relative to radius
       stroke_color: '#333',
       stroke_width: 0,
-      show_percent: true, // show or hide the percentage on the chart.
+      show_percent: true,       // show or hide the percentage on the chart.
       animation_speed: 500,
-      animation_type: 'elastic' // options: backin, backout, bounce, easein, easeinout, easeout, linear
+      animation_type: 'elastic' // options: backin, backout, bounce, easein, 
+                                //          easeinout, easeout, linear
     },
 
     init : function (scope, options) {
@@ -260,12 +261,7 @@
       return svg;
     },
 
-    // Options:
-    // - centerX, centerY: coordinates for the center of the circle    
-    // - startDegrees, endDegrees: fill between these angles, clockwise
-    // - innerRadius, outerRadius: distance from the center
-    // - thickness: distance between innerRadius and outerRadius
-    //   You should only specify two out of three of the radii and thickness
+    // http://stackoverflow.com/questions/11479185/svg-donut-slice-as-path-element-annular-sector
     annular_sector : function (path, options) {
       var opts = optionsWithDefaults(options);
 
@@ -274,7 +270,7 @@
       //   var x2 = cx + r * Math.sin(end_angle);
       //   var y2 = cy - r * Math.cos(end_angle);
       var p = [ // points
-        [opts.cx + opts.r2*Math.sin(opts.startRadians),
+        [opts.cx + opts.r2 * Math.sin(opts.startRadians),
          opts.cy - opts.r2*Math.cos(opts.startRadians)],
         [opts.cx + opts.r2*Math.sin(opts.closeRadians),
          opts.cy - opts.r2*Math.cos(opts.closeRadians)],
