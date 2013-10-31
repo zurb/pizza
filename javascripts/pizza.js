@@ -131,26 +131,28 @@
             cy = (base / 2),
             r = ((base / 2) * 0.85);
 
-        // Compute the two points where our wedge intersects the circle
-        // These formulas are chosen so that an angle of 0 is at 12 o'clock
-        // and positive angles increase clockwise
-        var x1 = cx + r * Math.sin(start_angle);
-        var y1 = cy - r * Math.cos(start_angle);
-        var x2 = cx + r * Math.sin(end_angle);
-        var y2 = cy - r * Math.cos(end_angle);
+        if (!settings.donut) {
+          // Compute the two points where our wedge intersects the circle
+          // These formulas are chosen so that an angle of 0 is at 12 o'clock
+          // and positive angles increase clockwise
+          var x1 = cx + r * Math.sin(start_angle);
+          var y1 = cy - r * Math.cos(start_angle);
+          var x2 = cx + r * Math.sin(end_angle);
+          var y2 = cy - r * Math.cos(end_angle);
 
-        // This is a flag for angles larger than than a half circle
-        // It is required by the SVG arc drawing component
-        var big = 0;
-        if (end_angle - start_angle > Math.PI) big = 1;
+          // This is a flag for angles larger than than a half circle
+          // It is required by the SVG arc drawing component
+          var big = 0;
+          if (end_angle - start_angle > Math.PI) big = 1;
 
-        // This string holds the path details
-        var d = "M" + cx + "," + cy +  // Start at circle center
-            " L" + x1 + "," + y1 +     // Draw line to (x1,y1)
-            " A" + r + "," + r +       // Draw an arc of radius r
-            " 0 " + big + " 1 " +      // Arc details...
-            x2 + "," + y2 +            // Arc goes to to (x2,y2)
-            " Z";                      // Close path back to (cx,cy)
+          // This string holds the path details
+          var d = "M" + cx + "," + cy +  // Start at circle center
+              " L" + x1 + "," + y1 +     // Draw line to (x1,y1)
+              " A" + r + "," + r +       // Draw an arc of radius r
+              " 0 " + big + " 1 " +      // Arc details...
+              x2 + "," + y2 +            // Arc goes to to (x2,y2)
+              " Z";                      // Close path back to (cx,cy)
+        }
 
         var path = svg.path();
         var percent = (data[i].value / total) * 100.0;
