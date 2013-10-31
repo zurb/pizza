@@ -7303,42 +7303,41 @@ a.th {
   max-width: 800px;
 }
 
-/*
-@function -modify-color($color, $counter, $depth: ($items-in-list + 1)) {
-  @return lighten($pie-color, $i * ($items-in-list + 1));
+/* line 57, ../sass/app1.scss */
+ul[data-pie-id] {
+  float: right;
+  list-style: none;
+  padding: 10px;
 }
-*/
-/* line 82, ../sass/app.scss */
-[data-pie-id] li:nth-child(0) {
-  color: blue;
+/* line 65, ../sass/app1.scss */
+ul[data-pie-id] li:nth-child(1) {
+  color: #EA6045;
 }
-
-/* line 82, ../sass/app.scss */
-[data-pie-id] li:nth-child(1) {
-  color: #4d00ff;
+/* line 68, ../sass/app1.scss */
+ul[data-pie-id] li:nth-child(2) {
+  color: #F8CA4D;
 }
-
-/* line 82, ../sass/app.scss */
-[data-pie-id] li:nth-child(2) {
-  color: #9900ff;
+/* line 71, ../sass/app1.scss */
+ul[data-pie-id] li:nth-child(3) {
+  color: #3F5666;
 }
-
-/* line 82, ../sass/app.scss */
-[data-pie-id] li:nth-child(3) {
-  color: #e500ff;
+/* line 74, ../sass/app1.scss */
+ul[data-pie-id] li:nth-child(4) {
+  color: #F5E5C0;
 }
-
-/* line 82, ../sass/app.scss */
-[data-pie-id] li:nth-child(4) {
-  color: #ff00cc;
+/* line 77, ../sass/app1.scss */
+ul[data-pie-id] li:nth-child(5) {
+  color: #2F3440;
 }
 
-/* line 82, ../sass/app.scss */
-[data-pie-id] li:nth-child(5) {
-  color: #ff0080;
+/* line 82, ../sass/app1.scss */
+svg text {
+  background: #eee;
+  color: #333;
+  font-size: .9em;
 }
 
-/* line 82, ../sass/app.scss */
-[data-pie-id] li:nth-child(6) {
-  color: #ff0033;
+/* line 88, ../sass/app1.scss */
+svg {
+  overflow: visible;
 }

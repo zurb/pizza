@@ -1,3 +1,7 @@
+// TODO, allow specifying settings with data-options
+// Add touch interaction.
+
+
 ;(function ($, window, document, undefined) {
   'use strict';
 
@@ -9,8 +13,8 @@
     settings : {
       percent_offset: 35, //in pixels relative to radius of pie chart
       stroke_color: '#333',
-      stroke_width: 1,
-      show_percent: false,
+      stroke_width: 0,
+      show_percent: true,
       animation_speed: 500,
       animation_type: 'elastic' // options: backin, backout, bounce, easein, easeinout, easeout, linear
     },
@@ -38,12 +42,20 @@
         self.build($('[data-pie-id]'));
       }, 100));
 
-      $(document).off('.graphs').on('mouseenter.graphs mouseleave.graphs', '[data-pie-id] li', function (e) {
+      $(document).off('.graphs').on('mouseenter.graphs mouseleave.graphs touchend.graphs', '[data-pie-id] li', function (e) {
         var path = Snap($('path[data-id="s' + $(this).index() + '"]')[0]),
             text = Snap($(path.node).parent()
               .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]);
 
-        if (/enter/i.test(e.type)) {
+        if (/end/i.test(e.type)) {
+          $(path.node).siblings('path').each(function () {
+            Snap(this).animate({
+              transform: ''
+            }, self.settings.animation_speed);
+          });
+        }
+
+        if (/enter|end/i.test(e.type)) {
           path.animate({
             transform: 's1.05 1.05 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
           }, self.settings.animation_speed, mina[self.settings.animation_type]);
@@ -197,10 +209,21 @@
           transform: 's1.05 1.05 ' + cx + ' ' + cy
         }, self.settings.animation_speed, mina[self.settings.animation_type]);
 
+        text.touchend(function () {
+          path.animate({
+            transform: 's1.05 1.05 ' + cx + ' ' + cy
+          }, self.settings.animation_speed, mina[self.settings.animation_type]);
+        });
+
         if (self.settings.show_percent) {
           text.animate({
             opacity: 1
           }, self.settings.animation_speed);
+          text.touchend(function () {
+            text.animate({
+              opacity: 1
+            }, self.settings.animation_speed);
+          });
         }
       }, function (e) {
         var path = Snap(e.target),
@@ -210,6 +233,7 @@
         path.animate({
           transform: ''
         }, self.settings.animation_speed, mina[self.settings.animation_type]);
+
         text.animate({
           opacity: 0
         }, self.settings.animation_speed);
@@ -227,9 +251,11 @@
       } else {
         svg = Snap(width, height);
       }
+
       svg.node.setAttribute('width', width);
       svg.node.setAttribute('height', height);
       svg.node.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+
       return svg;
     },
 
