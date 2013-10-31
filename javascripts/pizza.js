@@ -40,22 +40,27 @@
         self.init();
       }, 100));
 
-      $(this.scope).off('.pizza').on('mouseenter.pizaa mouseleave.pizza touchend.pizza', '[data-pie-id] li', function (e) {
+      $(this.scope).off('.pizza').on('mouseenter.pizaa mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
         var parent = $(this).parent(),
             path = Snap($('#' + parent.data('pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0]),
             text = Snap($(path.node).parent()
               .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]),
             settings = $(this).parent().data('settings');
 
-        if (/end/i.test(e.type)) {
+        if (/start/i.test(e.type)) {
           $(path.node).siblings('path').each(function () {
-            Snap(this).animate({
-              transform: ''
-            }, settings.animation_speed);
+            if (this.nodeName) {
+              path.animate({
+                transform: 's1 1 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
+              }, settings.animation_speed, mina[settings.animation_type]);
+              Snap($(this).next()[0]).animate({
+                opacity: 0
+              }, settings.animation_speed);
+            }
           });
         }
 
-        if (/enter|end/i.test(e.type)) {
+        if (/enter|start/i.test(e.type)) {
           path.animate({
             transform: 's1.05 1.05 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
           }, settings.animation_speed, mina[settings.animation_type]);
@@ -129,8 +134,6 @@
           start_angle = 0,
           base = $(this.identifier(legend)).width() - 4;
 
-      $('path, text', svg.node).remove();
-
       for (var i = 0; i < data.length; i++) {
         total += data[i].value;
       }
@@ -168,12 +171,29 @@
               " Z";                      // Close path back to (cx,cy)
         }
 
-        var path = svg.path();
+        var existing_path = $('path[data-id="s' + i + '"]', svg.node);
+
+        if (existing_path.length > 0) {
+          var path = Snap(existing_path[0]);
+        } else {
+          var path = svg.path();
+        }
+
         var percent = (data[i].value / total) * 100.0;
 
         // thanks to Raphael.js
-        var text = path.paper.text(cx + (r + settings.percent_offset) * Math.sin(start_angle + (angles[i] / 2)),
-         cy - (r + settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2)), Math.ceil(percent) + '%');
+        var existing_text = $('text[data-id="s' + i + '"]', svg.node);
+
+        if (existing_text.length > 0) {
+          var text = Snap(existing_text[0]);
+          text.attr({
+            x: cx + (r + settings.percent_offset) * Math.sin(start_angle + (angles[i] / 2)),
+            y: cy - (r + settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2))
+          });
+        } else {
+          var text = path.paper.text(cx + (r + settings.percent_offset) * Math.sin(start_angle + (angles[i] / 2)),
+               cy - (r + settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2)), Math.ceil(percent) + '%');
+        }
 
         var left_offset = text.getBBox().width / 2;
 
