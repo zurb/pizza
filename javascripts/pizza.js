@@ -19,9 +19,19 @@
     },
 
     init : function (scope, options) {
-      this.scope = scope || this.scope;
+      var self = this;
+      this.scope = scope || document.body;
 
-      this.build($('[data-pie-id]'), options);
+      var pies = $('[data-pie-id]', this.scope);
+
+      if (pies.length > 1) {
+        pies.each(function () {
+          return self.build($(this), options);
+        });
+      } else {
+        this.build($(this.scope), options);
+      }
+
       this.events();
     },
 
@@ -29,7 +39,7 @@
       var self = this;
 
       $(window).off('.graphs').on('resize.graphs', self.throttle(function () {
-        self.build($('[data-pie-id]'));
+        self.init();
       }, 100));
 
       $(this.scope).off('.graphs').on('mouseenter.graphs mouseleave.graphs touchend.graphs', '[data-pie-id] li', function (e) {
@@ -71,27 +81,33 @@
     build : function(legends, options) {
       var self = this;
 
-      legends.each(function () {
-        var legend = $(this), graph;
-        legend.data('settings', $.extend({}, self.settings, options, legend.data('options')));
-        self.data(legend);
+      var legend = legends, graph;
+      legend.data('settings', $.extend({}, self.settings, options, legend.data('options')));
+      self.data(legend, options || {});
 
-        return self.update_DOM(self.pie(legend));
-      });
+      return self.update_DOM(self.pie(legend));
     },
 
-    data : function (legend) {
+    data : function (legend, options) {
       var data = [],
           count = 0;
 
       $('li', legend).each(function () {
         var segment = $(this);
 
-        data.push({
-          value: segment.data('value'), 
-          color: segment.css('color'),
-          segment: segment
-        });
+        if (options.data) {
+          data.push({
+            value: options.data[segment.index()], 
+            color: segment.css('color'),
+            segment: segment
+          });
+        } else {
+          data.push({
+            value: segment.data('value'), 
+            color: segment.css('color'),
+            segment: segment
+          });
+        }
       });
 
       return legend.data('graph-data', data);
