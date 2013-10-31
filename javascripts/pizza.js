@@ -267,12 +267,8 @@
     annular_sector : function (path, options) {
       var opts = optionsWithDefaults(options);
 
-      // var x1 = cx + r * Math.sin(start_angle);
-      //   var y1 = cy - r * Math.cos(start_angle);
-      //   var x2 = cx + r * Math.sin(end_angle);
-      //   var y2 = cy - r * Math.cos(end_angle);
       var p = [ // points
-        [opts.cx + opts.r2 * Math.sin(opts.startRadians),
+        [opts.cx + opts.r2*Math.sin(opts.startRadians),
          opts.cy - opts.r2*Math.cos(opts.startRadians)],
         [opts.cx + opts.r2*Math.sin(opts.closeRadians),
          opts.cy - opts.r2*Math.cos(opts.closeRadians)],
