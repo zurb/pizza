@@ -1,7 +1,3 @@
-// TODO, allow specifying settings with data-options
-// Add touch interaction.
-
-
 ;(function ($, window, document, undefined) {
   'use strict';
 
@@ -11,28 +7,19 @@
     version : '1.0.0',
 
     settings : {
-      percent_offset: 35, //in pixels relative to radius of pie chart
+      percent_offset: 35, // relative to radius
       stroke_color: '#333',
       stroke_width: 0,
-      show_percent: true,
+      show_percent: true, // show or hide the percentage on the chart.
       animation_speed: 500,
       animation_type: 'elastic' // options: backin, backout, bounce, easein, easeinout, easeout, linear
     },
 
-    init : function (scope, method, options) {
+    init : function (scope, options) {
       this.scope = scope || this.scope;
 
-      if (typeof method === 'object') {
-        $.extend(true, this.settings, method);
-      }
-
-      this.build($('[data-pie-id]'));
-
-      if (typeof method !== 'string') {
-        this.events();
-      } else {
-        return this[method].call(this, options);
-      }
+      this.build($('[data-pie-id]'), options);
+      this.events();
     },
 
     events : function () {
@@ -42,45 +29,48 @@
         self.build($('[data-pie-id]'));
       }, 100));
 
-      $(document).off('.graphs').on('mouseenter.graphs mouseleave.graphs touchend.graphs', '[data-pie-id] li', function (e) {
-        var path = Snap($('path[data-id="s' + $(this).index() + '"]')[0]),
+      $(this.scope).off('.graphs').on('mouseenter.graphs mouseleave.graphs touchend.graphs', '[data-pie-id] li', function (e) {
+        var parent = $(this).parent(),
+            path = Snap($('#' + parent.data('pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0]),
             text = Snap($(path.node).parent()
-              .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]);
+              .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]),
+            settings = $(this).parent().data('settings');
 
         if (/end/i.test(e.type)) {
           $(path.node).siblings('path').each(function () {
             Snap(this).animate({
               transform: ''
-            }, self.settings.animation_speed);
+            }, settings.animation_speed);
           });
         }
 
         if (/enter|end/i.test(e.type)) {
           path.animate({
             transform: 's1.05 1.05 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
-          }, self.settings.animation_speed, mina[self.settings.animation_type]);
+          }, settings.animation_speed, mina[settings.animation_type]);
 
-          if (self.settings.show_percent) {
+          if (settings.show_percent) {
             text.animate({
               opacity: 1
-            }, self.settings.animation_speed);
+            }, settings.animation_speed);
           }
         } else {
           path.animate({
             transform: ''
-          }, self.settings.animation_speed, mina[self.settings.animation_type]);
+          }, settings.animation_speed, mina[settings.animation_type]);
           text.animate({
             opacity: 0
-          }, self.settings.animation_speed);
+          }, settings.animation_speed);
         }
       });
     },
 
-    build : function(legends) {
+    build : function(legends, options) {
       var self = this;
 
       legends.each(function () {
         var legend = $(this), graph;
+        legend.data('settings', $.extend({}, self.settings, options, legend.data('options')));
         self.data(legend);
 
         if (legend.data('bar-id')) {
@@ -118,7 +108,8 @@
     pie : function (legend) {
       // pie chart concept from JavaScript the 
       // Definitive Guide 6th edition by David Flanagan
-      var svg = this.svg(legend),
+      var settings = legend.data('settings'),
+          svg = this.svg(legend, settings),
           data = legend.data('graph-data'),
           total = 0,
           angles = [],
@@ -166,8 +157,8 @@
         var percent = (data[i].value / total) * 100.0;
 
         // thanks to Raphael.js
-        var text = path.paper.text(cx + (r + this.settings.percent_offset) * Math.sin(start_angle + (angles[i] / 2)),
-         cy - (r + this.settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2)), Math.ceil(percent) + '%');
+        var text = path.paper.text(cx + (r + settings.percent_offset) * Math.sin(start_angle + (angles[i] / 2)),
+         cy - (r + settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2)), Math.ceil(percent) + '%');
 
         var left_offset = text.getBBox().width / 2;
 
@@ -183,13 +174,13 @@
         path.attr({
           d: d,
           fill: data[i].color,
-          stroke: this.settings.stroke_color,
-          strokeWidth: this.settings.stroke_width
+          stroke: settings.stroke_color,
+          strokeWidth: settings.stroke_width
         });
 
         path.node.setAttribute('data-id', 's' + i);
 
-        this.animate(path, cx, cy);
+        this.animate(path, cx, cy, settings);
 
         // The next wedge begins where this one ends
         start_angle = end_angle;
@@ -198,8 +189,9 @@
       return [legend, svg.node];
     },
 
-    animate : function (el, cx, cy) {
+    animate : function (el, cx, cy, settings) {
       var self = this;
+
       el.hover(function (e) {
         var path = Snap(e.target),
             text = Snap($(path.node).parent()
@@ -207,22 +199,22 @@
 
         path.animate({
           transform: 's1.05 1.05 ' + cx + ' ' + cy
-        }, self.settings.animation_speed, mina[self.settings.animation_type]);
+        }, settings.animation_speed, mina[settings.animation_type]);
 
         text.touchend(function () {
           path.animate({
             transform: 's1.05 1.05 ' + cx + ' ' + cy
-          }, self.settings.animation_speed, mina[self.settings.animation_type]);
+          }, settings.animation_speed, mina[settings.animation_type]);
         });
 
-        if (self.settings.show_percent) {
+        if (settings.show_percent) {
           text.animate({
             opacity: 1
-          }, self.settings.animation_speed);
+          }, settings.animation_speed);
           text.touchend(function () {
             text.animate({
               opacity: 1
-            }, self.settings.animation_speed);
+            }, settings.animation_speed);
           });
         }
       }, function (e) {
@@ -232,15 +224,15 @@
 
         path.animate({
           transform: ''
-        }, self.settings.animation_speed, mina[self.settings.animation_type]);
+        }, settings.animation_speed, mina[settings.animation_type]);
 
         text.animate({
           opacity: 0
-        }, self.settings.animation_speed);
+        }, settings.animation_speed);
       });
     },
 
-    svg : function (legend) {
+    svg : function (legend, settings) {
       var container = $(this.identifier(legend)),
           svg = $('svg', container),
           width = container.width(),
@@ -254,7 +246,9 @@
 
       svg.node.setAttribute('width', width);
       svg.node.setAttribute('height', height);
-      svg.node.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+      svg.node.setAttribute('viewBox', '-10 -10 ' + 
+        (width + (settings.percent_offset / 1.5)) + ' ' + 
+        (height + (settings.percent_offset / 1.3)));
 
       return svg;
     },
