@@ -42,7 +42,7 @@
         self.init();
       }, 100));
 
-      $(this.scope).off('.pizza').on('mouseenter.pizaa mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
+      $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
         var parent = $(this).parent(),
             path = Snap($('#' + parent.data('pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0]),
             text = Snap($(path.node).parent()
