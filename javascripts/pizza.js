@@ -12,6 +12,7 @@
       stroke_width: 0,
       show_percent: true,       // show or hide the percentage on the chart.
       animation_speed: 500,
+      always_show_percent: false,
       animation_type: 'elastic' // options: backin, backout, bounce, easein, 
                                 //          easeinout, easeout, linear
     },
@@ -200,10 +201,17 @@
 
         var left_offset = text.getBBox().width / 2;
 
-        text.attr({
-          x: text.attr('x') - left_offset,
-          opacity: 0
-        });
+        if (settings.always_show_percent) {
+          text.attr({
+            x: text.attr('x') - left_offset,
+            opacity: 1
+          });
+        } else {
+          text.attr({
+            x: text.attr('x') - left_offset,
+            opacity: 0
+          });
+        }
 
         text.node.setAttribute('data-id', 's' + i);
         path.node.setAttribute('data-cx', cx);
