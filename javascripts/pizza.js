@@ -146,6 +146,8 @@
         angles[i] = data[i].value / total * Math.PI * 2;
       }
 
+      if(angles.length == 1) angles[0] = Math.PI * 2 - 0.0001; // if 1
+
       for (var i = 0; i < data.length; i++) {
         var end_angle = start_angle + angles[i];
         var cx = (base / 2),
