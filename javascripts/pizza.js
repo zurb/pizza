@@ -41,7 +41,7 @@
 
       $(window).off('.pizza').on('resize.pizza', self.throttle(function () {
         self.init();
-      }, 100));
+      }, 500));
 
       $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
         var parent = $(this).parent(),

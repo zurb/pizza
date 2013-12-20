@@ -23,6 +23,11 @@ $i: 0;
   $i: $i + 1;
 }
 
+// Set the SVG to 100% width to smooth responsive resizing (optional)
+// svg {
+//   width: 100%;
+// }
+
 ul[data-pie-id] {
   list-style: none;
   padding: 10px;
