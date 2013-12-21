@@ -33,6 +33,16 @@ You can pass options to the chart by using the `data-options` attribute on your 
 <ul data-pie-id="svg" data-options='{"donut":"true"}'>
 ```
 
+## Custom Text
+
+Setting `data-text` on your `li` allows you to override the default percent for pie piece labels.
+
+```
+<li data-value="32" data-text="Goats {{percent}} ({{value}} total)">Goat (32)</li>
+```
+
+Will render out `Goats 19% (32 total)` for example.
+
 Or on initialization:
 
 ```
