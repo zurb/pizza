@@ -2,7 +2,7 @@
   'use strict';
 
   var Pizza = {
-    version : '0.0.2',
+    version : '0.1.0',
 
     settings : {
       donut: false,
@@ -10,7 +10,7 @@
       percent_offset: 35,       // relative to radius
       stroke_color: '#333',
       stroke_width: 0,
-      show_percent: true,       // show or hide the percentage on the chart.
+      show_text: true,       // show or hide the percentage on the chart.
       animation_speed: 500,
       always_show_percent: false,
       animation_type: 'elastic' // options: backin, backout, bounce, easein, 
@@ -104,13 +104,15 @@
 
         if (options.data) {
           data.push({
-            value: options.data[segment.index()], 
+            value: options.data[segment.index()],
+            text: segment.data('text'), 
             color: segment.css('color'),
             segment: segment
           });
         } else {
           data.push({
-            value: segment.data('value'), 
+            value: segment.data('value'),
+            text: segment.data('text'), 
             color: segment.css('color'),
             segment: segment
           });
@@ -197,8 +199,14 @@
             y: cy - (r + settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2))
           });
         } else {
+          if (data[i].text) {
+            var visible_text = this.parse_options(data[i].text, percent, data[i].value);
+          } else {
+            var visible_text = Math.ceil(percent) + '%';
+          }
+
           var text = path.paper.text(cx + (r + settings.percent_offset) * Math.sin(start_angle + (angles[i] / 2)),
-               cy - (r + settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2)), Math.ceil(percent) + '%');
+               cy - (r + settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2)), visible_text);
         }
 
         var left_offset = text.getBBox().width / 2;
@@ -356,6 +364,25 @@
 
         return o2;
       }
+    },
+
+    parse_options : function (string, percent, value) {
+      var matches = string.match(/{{(percent|value)}}/g),
+          output = '';
+
+      for (var i = 0; i < matches.length; i++) {
+
+        console.log(matches[i])
+        if (/percent/i.test(matches[i])) {
+          output = string.replace(matches[i], [Math.ceil(percent), '%'].join(''));
+        }
+
+        if (/value/i.test(matches[i])) {
+          output = output.replace(matches[i], value);
+        }
+      }
+
+      return output;
     },
 
     identifier : function (legend) {
