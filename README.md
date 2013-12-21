@@ -43,7 +43,7 @@ Pizza.init('#myChart', {
 
 ### Custom Text
 
-Setting `data-text` on your `li` allows you to override the default percent for pie piece labels.
+Setting `data-text` on your `li` allows you to override the default percent for pie piece labels. You have access to `value` and `percent` as variables. All variables are wrapped in handlebar.js style double brackets.
 
 ```
 <li data-value="32" data-text="Goats {{percent}} ({{value}} total)">Goat (32)</li>
