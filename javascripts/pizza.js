@@ -372,7 +372,6 @@
 
       for (var i = 0; i < matches.length; i++) {
 
-        console.log(matches[i])
         if (/percent/i.test(matches[i])) {
           output = string.replace(matches[i], [Math.ceil(percent), '%'].join(''));
         }
