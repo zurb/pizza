@@ -12,7 +12,7 @@
       stroke_width: 0,
       show_text: true,       // show or hide the percentage on the chart.
       animation_speed: 500,
-      always_show_percent: false,
+      always_show_text: false,
       animation_type: 'elastic' // options: backin, backout, bounce, easein, 
                                 //          easeinout, easeout, linear
     },
@@ -44,6 +44,7 @@
       }, 500));
 
       $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
+        console.log('test')
         var parent = $(this).parent(),
             path = Snap($('#' + parent.data('pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0]),
             text = Snap($(path.node).parent()
@@ -68,7 +69,7 @@
             transform: 's1.05 1.05 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
           }, settings.animation_speed, mina[settings.animation_type]);
 
-          if (settings.show_percent) {
+          if (settings.show_text) {
             text.animate({
               opacity: 1
             }, settings.animation_speed);
@@ -194,11 +195,14 @@
 
         if (existing_text.length > 0) {
           var text = Snap(existing_text[0]);
+
           text.attr({
             x: cx + (r + settings.percent_offset) * Math.sin(start_angle + (angles[i] / 2)),
             y: cy - (r + settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2))
           });
+
         } else {
+
           if (data[i].text) {
             var visible_text = this.parse_options(data[i].text, percent, data[i].value);
           } else {
@@ -211,7 +215,7 @@
 
         var left_offset = text.getBBox().width / 2;
 
-        if (settings.always_show_percent) {
+        if (settings.always_show_text) {
           text.attr({
             x: text.attr('x') - left_offset,
             opacity: 1
@@ -272,7 +276,7 @@
           }, settings.animation_speed, mina[settings.animation_type]);
         });
 
-        if (settings.show_percent) {
+        if (settings.show_text) {
           text.animate({
             opacity: 1
           }, settings.animation_speed);
