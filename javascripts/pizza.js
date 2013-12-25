@@ -2,7 +2,7 @@
   'use strict';
 
   var Pizza = {
-    version : '0.1.0',
+    version : '0.1.1',
 
     settings : {
       donut: false,
@@ -44,7 +44,6 @@
       }, 500));
 
       $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
-        console.log('test')
         var parent = $(this).parent(),
             path = Snap($('#' + parent.data('pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0]),
             text = Snap($(path.node).parent()
