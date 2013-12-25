@@ -27,7 +27,7 @@ To initialize your charts, you can call `Pizza.init();` at the end of the body o
 
 ### Data Options
 
-You can pass options to the chart by using the `data-options` attribute on your legend, or by passing them in on initialization.
+You can pass options to the chart by using the `data-options` attribute on your legend:
 
 ```
 <ul data-pie-id="svg" data-options='{"donut":"true"}'>
