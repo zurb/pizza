@@ -2,7 +2,7 @@
   'use strict';
 
   var Pizza = {
-    version : '0.1.1',
+    version : '0.1.2',
 
     settings : {
       donut: false,
@@ -29,7 +29,7 @@
         pies.each(function () {
           return self.build($(this), options);
         });
-      } else {
+      } else if ($(this.scope).is('[data-pie-id]')) {
         this.build($(this.scope), options);
       }
 
