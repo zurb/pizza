@@ -6,7 +6,7 @@ $items-in-list: 6;
 
 //Adjusts the Hue
 @function -modify-color($color, $counter, $depth: $items-in-list) {
-  @return adjust_hue($pie-color, $i * ($items-in-list * 3));
+  @return adjust-hue($pie-color, $i * ($items-in-list * 3));
 }
 
 //Adjusts the Saturation.

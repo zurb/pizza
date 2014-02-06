@@ -8,9 +8,10 @@
   <meta name="viewport" content="width=device-width">
   <title>Pie</title>
 
-  <link href="stylesheets/app.css" media="screen, projector, print" rel="stylesheet" type="text/css" />
-  <link href="stylesheets/pizza.css" media="screen, projector, print" rel="stylesheet" type="text/css" />
-  <script src="javascripts/vendor/custom.modernizr.js"></script>
+  <link href="dist/css/vendor/normalize.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="dist/css/vendor/foundation.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="dist/css/pizza.min.css" media="screen, projector, print" rel="stylesheet" type="text/css" />
+  <script src="dist/js/vendor/modernizr.js"></script>
 
 </head>
 <body>
@@ -49,10 +50,8 @@
     </div>
   </div>
 
-  <script src="javascripts/vendor/jquery.js"></script>
-  <script src="javascripts/vendor/snap.svg.js"></script>
-	<script src="javascripts/pizza.js"></script>
-  <script src="javascripts/pie.js"></script>
+  <script src="dist/js/vendor/dependencies.js"></script>
+	<script src="dist/js/pizza.js"></script>
   <script>
     $(window).load(function() {
       Pizza.init();

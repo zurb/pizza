@@ -1,0 +1,14 @@
+{
+  "name": "pizza",
+  "version": "0.2.0",
+  "main": [
+    "css/pizza.css",
+    "js/pizza.js"
+  ],
+  "dependencies": {
+    "jquery": ">= 2.0.0",
+    "foundation": ">= 5.1.0",
+    "Snap.svg": ">= 0.2.0"
+  },
+  "private": true
+}
