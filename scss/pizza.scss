@@ -1,8 +1,9 @@
 // Pie Chart Variables
-$pie-color: blue;
+$pie-color: blue !default;
+$label-color: green !default;
 
 // number of items in your list
-$items-in-list: 6;
+$items-in-list: 6 !default;
 
 //Adjusts the Hue
 @function -modify-color($color, $counter, $depth: $items-in-list) {
@@ -27,6 +28,10 @@ $i: 0;
 // svg {
 //   width: 100%;
 // }
+
+svg text {
+  fill: $label-color;
+}
 
 ul[data-pie-id] {
   list-style: none;
