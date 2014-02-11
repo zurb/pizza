@@ -6,7 +6,7 @@ $.extend(Pizza, {
         current_offset = 0,
         container = $(this.identifier(legend)),
         base_width = container.width(),
-        base_height = $(this.identifier(legend)).width() - 4,
+        base_height = $(this.identifier(legend)).width(),
         max = min = 0,
         total = total_tick_height = 0,
         interval = (base_width - (data.length * settings.bar_spacer)) / data.length;
@@ -27,10 +27,10 @@ $.extend(Pizza, {
     }
 
     if (settings.show_grid) {
-      this.assemble_grid(g, svg, min, max, base_height, settings);
+      this.assemble_grid(g, svg, min, max, base_width, base_height, settings);
     }
 
-    svg.node.setAttribute('preserveAspectRatio', 'none');
+    // svg.node.setAttribute('preserveAspectRatio', 'none');
 
     g.node.setAttribute('transform', 'translate(0, ' + (base_height - 2) +') scale(1, -1)');
 
@@ -60,13 +60,14 @@ $.extend(Pizza, {
     return [legend, svg.node];
   },
 
-  assemble_grid : function (g, svg, min, max, height, settings) {
+  assemble_grid : function (g, svg, min, max, width, height, settings) {
     var ticks = this.ticks(min, max, settings.bar_intervals),
         ticks_length = ticks.length;
 
     for (var i = 0; i < ticks_length; i++) {
       var line_height = total_tick_height + (height/ticks_length);
-      var line = svg.line(0, line_height, 10000, line_height);
+      var line = svg.line(0, line_height, width, line_height);
+      var text = line.paper.text(-25, line_height, ticks.sort().reverse()[i]);
       line.node.setAttribute("stroke", "gray");
       line.node.setAttribute("stroke-width", "1");
       g.add(line);
