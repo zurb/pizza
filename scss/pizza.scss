@@ -25,13 +25,22 @@ $i: 0;
 }
 
 // Set the SVG to 100% width to smooth responsive resizing (optional)
-// svg {
-//   width: 100%;
-// }
-
-svg text {
-  fill: $label-color;
+#pie, #donut, #bar {
+  max-height: 450px;
 }
+
+#bar {
+  height: 200px;
+}
+
+svg {
+  width: 100%;
+  height: auto;
+}
+
+// svg text {
+//   fill: $label-color;
+// }
 
 ul[data-pie-id] {
   list-style: none;

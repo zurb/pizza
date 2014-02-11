@@ -51,7 +51,7 @@ Pizza.pie = function (legend) {
     var existing_path = $('path[data-id="s' + i + '"]', svg.node);
 
     if (existing_path.length > 0) {
-      var path = Snap(existing_path[0]);
+      return [legend, svg.node];
     } else {
       var path = svg.path();
     }

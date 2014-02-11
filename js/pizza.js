@@ -10,6 +10,9 @@ var Pizza = {
     show_text: true,       // show or hide the percentage on the chart.
     animation_speed: 500,
     always_show_text: false,
+    show_grid: true,
+    bar_spacer: 10,
+    bar_intervals: 5,
     animation_type: 'elastic' // options: backin, backout, bounce, easein, 
                               //          easeinout, easeout, linear
   },
@@ -94,7 +97,7 @@ var Pizza = {
     } else if (legend.data('line-id')) {
       self.update_DOM(self.line(legend));
     } else if (legend.data('bar-id')) {
-      self.update_DOM(self.pie(legend));
+      self.update_DOM(self.bar(legend));
     }
   },
 
@@ -205,8 +208,8 @@ var Pizza = {
       svg = Snap(width, height);
     }
 
-    svg.node.setAttribute('width', width + settings.percent_offset);
-    svg.node.setAttribute('height', height + settings.percent_offset);
+    svg.node.setAttribute('width', '100%');
+    svg.node.setAttribute('height', '100%');
     svg.node.setAttribute('viewBox', '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
       (width + (settings.percent_offset * 1.5)) + ' ' + 
       (height + (settings.percent_offset * 1.5)));
@@ -215,7 +218,8 @@ var Pizza = {
   },
 
   identifier : function (legend) {
-    return '#' + legend.data('pie-id');
+    id = legend.data('pie-id') || legend.data('bar-id') || legend.data('line-id');
+    return '#' + id;
   },
 
   throttle : function(fun, delay) {
@@ -227,5 +231,28 @@ var Pizza = {
         fun.apply(context, args);
       }, delay);
     };
+  },
+
+  ticks: function (min, max, count) {
+    var span = max - min,
+        step = Math.pow(10, Math.floor(Math.log(span / count) / Math.LN10)),
+        err = count / span * step;
+
+    // Filter ticks to get closer to the desired count.
+    if (err <= .15) step *= 10;
+    else if (err <= .35) step *= 5;
+    else if (err <= .75) step *= 2;
+
+    // Round start and stop values to step interval.
+    var tstart = Math.ceil(min / step) * step,
+        tstop = Math.floor(max / step) * step + step * .5,
+        ticks = [],
+        x;
+
+    // now generate ticks
+    for (i=tstart; i < tstop; i += step) {
+        ticks.push(i);  
+    } 
+    return ticks;
   }
 };
