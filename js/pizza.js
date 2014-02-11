@@ -12,7 +12,7 @@ var Pizza = {
     always_show_text: false,
     show_grid: true,
     bar_spacer: 10,
-    bar_intervals: 5,
+    bar_intervals: 6,
     animation_type: 'elastic' // options: backin, backout, bounce, easein, 
                               //          easeinout, easeout, linear
   },

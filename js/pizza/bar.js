@@ -20,7 +20,7 @@ $.extend(Pizza, {
     var existing_group = $('g', svg.node);
 
     if (existing_group.length > 0) {
-      return [legend, svg.node]
+      return [legend, svg.node];
       var g = Snap(existing_group[0]);
     } else {
       var g = svg.g();
@@ -34,8 +34,11 @@ $.extend(Pizza, {
 
     g.node.setAttribute('transform', 'translate(0, ' + (base_height - 2) +') scale(1, -1)');
 
+    console.log(data.length)
+
     for (var i = 0; i < data.length; i++) {
-      var y = (base_height - 5) * (data[i].value / max),
+      console.log(base_height, data[i].value, max)
+      var y = (base_height) * (data[i].value / max),
           rect = svg.rect();
 
       if (current_offset === 0) {
@@ -44,7 +47,7 @@ $.extend(Pizza, {
         var new_offset = current_offset + settings.bar_spacer;
       }
 
-      rect.node.setAttribute('x', new_offset + 5);
+      rect.node.setAttribute('x', new_offset);
       rect.node.setAttribute('y', 0);
       rect.node.setAttribute('width', interval);
       rect.node.setAttribute('height', y);
@@ -62,12 +65,12 @@ $.extend(Pizza, {
 
   assemble_grid : function (g, svg, min, max, width, height, settings) {
     var ticks = this.ticks(min, max, settings.bar_intervals),
-        ticks_length = ticks.length;
+        ticks_length = i = ticks.length;
 
-    for (var i = 0; i < ticks_length; i++) {
+    while (i--) {
       var line_height = total_tick_height + (height/ticks_length);
       var line = svg.line(0, line_height, width, line_height);
-      var text = line.paper.text(-25, line_height, ticks.sort().reverse()[i]);
+      var text = line.paper.text(-25, line_height, ticks[i]);
       line.node.setAttribute("stroke", "gray");
       line.node.setAttribute("stroke-width", "1");
       g.add(line);
