@@ -5,8 +5,8 @@ $.extend(Pizza, {
         data = legend.data('graph-data'),
         current_offset = 0,
         container = $(this.identifier(legend)),
-        base_width = container.width(),
-        base_height = $(this.identifier(legend)).width(),
+        base_width = container.outerWidth(),
+        base_height = container.outerHeight(),
         max = min = 0,
         total = total_tick_height = 0,
         interval = (base_width - (data.length * settings.bar_spacer)) / data.length;
@@ -32,14 +32,13 @@ $.extend(Pizza, {
 
     // svg.node.setAttribute('preserveAspectRatio', 'none');
 
-    g.node.setAttribute('transform', 'translate(0, ' + (base_height - 2) +') scale(1, -1)');
-
-    console.log(data.length)
+    g.node.setAttribute('transform', 'translate(0, ' + (base_height) +') scale(1, -1)');
 
     for (var i = 0; i < data.length; i++) {
-      console.log(base_height, data[i].value, max)
       var y = (base_height) * (data[i].value / max),
           rect = svg.rect();
+
+      console.log(base_height, data[i].value, max);
 
       if (current_offset === 0) {
         var new_offset = current_offset;
@@ -68,9 +67,11 @@ $.extend(Pizza, {
         ticks_length = i = ticks.length;
 
     while (i--) {
-      var line_height = total_tick_height + (height/ticks_length);
+      var line_height = total_tick_height + (450/(ticks_length-1));
       var line = svg.line(0, line_height, width, line_height);
-      var text = line.paper.text(-25, line_height, ticks[i]);
+      console.log(line_height)
+      var text = g.text(-25, line_height, ticks[i]);
+      text.node.setAttribute('transform', 'rotate(-180 -5 260) scale(-1 1)')
       line.node.setAttribute("stroke", "gray");
       line.node.setAttribute("stroke-width", "1");
       g.add(line);
