@@ -38,8 +38,6 @@ $.extend(Pizza, {
       var y = (base_height) * (data[i].value / max),
           rect = svg.rect();
 
-      console.log(base_height, data[i].value, max);
-
       if (current_offset === 0) {
         var new_offset = current_offset;
       } else {
@@ -67,11 +65,10 @@ $.extend(Pizza, {
         ticks_length = i = ticks.length;
 
     while (i--) {
-      var line_height = total_tick_height + (450/(ticks_length-1));
+      var line_height = total_tick_height + (height/(ticks_length-1));
       var line = svg.line(0, line_height, width, line_height);
-      console.log(line_height)
       var text = g.text(-25, line_height, ticks[i]);
-      text.node.setAttribute('transform', 'rotate(-180 -5 260) scale(-1 1)')
+      text.node.setAttribute('transform', 'rotate(-180 -5 260) scale(-1 1)');
       line.node.setAttribute("stroke", "gray");
       line.node.setAttribute("stroke-width", "1");
       g.add(line);
