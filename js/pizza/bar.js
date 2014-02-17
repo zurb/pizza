@@ -8,7 +8,7 @@ $.extend(Pizza, {
         base_width = container.outerWidth(),
         base_height = container.outerHeight(),
         max = min = 0,
-        total = total_tick_height = 0,
+        total = 0,
         interval = (base_width - (data.length * settings.bar_spacer)) / data.length;
 
     for (var i = 0; i < data.length; i++) {
@@ -20,8 +20,9 @@ $.extend(Pizza, {
     var existing_group = $('g', svg.node);
 
     if (existing_group.length > 0) {
-      return [legend, svg.node];
-      // var g = Snap(existing_group[0]);
+      // return [legend, svg.node];
+      $(existing_group[0]).children().remove();
+      var g = Snap(existing_group[0]);
     } else {
       var g = svg.g();
     }
@@ -62,7 +63,8 @@ $.extend(Pizza, {
 
   assemble_grid : function (g, svg, min, max, width, height, settings) {
     var ticks = this.ticks(min, max, settings.bar_intervals),
-        ticks_length = i = ticks.length;
+        ticks_length = i = ticks.length,
+        total_tick_height = 0;
 
     while (i--) {
       var line_height = total_tick_height + (height/(ticks_length-1));
