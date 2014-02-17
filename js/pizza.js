@@ -11,7 +11,7 @@ var Pizza = {
     animation_speed: 500,
     always_show_text: false,
     show_grid: true,
-    bar_spacer: 10,
+    bar_spacer: 50,
     bar_intervals: 6,
     animation_type: 'elastic' // options: backin, backout, bounce, easein, 
                               //          easeinout, easeout, linear
@@ -117,6 +117,8 @@ var Pizza = {
         });
       } else {
         data.push({
+          x : segment.data('x'),
+          y : segment.data('y'),
           value: segment.data('value'),
           text: segment.data('text'), 
           color: segment.css('color'),

@@ -21,7 +21,7 @@ $.extend(Pizza, {
 
     if (existing_group.length > 0) {
       return [legend, svg.node];
-      var g = Snap(existing_group[0]);
+      // var g = Snap(existing_group[0]);
     } else {
       var g = svg.g();
     }
