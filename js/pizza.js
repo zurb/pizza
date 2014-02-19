@@ -5,7 +5,7 @@ var Pizza = {
     donut: false,
     donut_inner_ratio: 0.4,   // between 0 and 1
     percent_offset: 35,       // relative to radius
-    stroke_color: '#333',
+    stroke_color: 'transparent',
     stroke_width: 0,
     show_text: true,       // show or hide the percentage on the chart.
     animation_speed: 500,
@@ -17,13 +17,15 @@ var Pizza = {
                               //          easeinout, easeout, linear
   },
 
+  NS : 'http://www.w3.org/2000/svg',
+
   init : function (scope, options) {
     var self = this;
     this.scope = scope || document.body;
 
     var charts = $('[data-pie-id], [data-line-id], [data-bar-id]', this.scope);
 
-    $.extend(true, this.settings, options)
+    $.extend(true, this.settings, options);
 
     if (charts.length > 0) {
       charts.each(function () {
@@ -47,57 +49,43 @@ var Pizza = {
 
     $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
       var parent = $(this).parent(),
-          path = Snap($('#' + parent.data('pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0]),
-          text = Snap($(path.node).parent()
-            .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]),
+          path = $('#' + parent.data('pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0],
+          text = $(path).parent().find('text[data-id="' + path.getAttribute('data-id') + '"]')[0],
           settings = $(this).parent().data('settings');
 
       if (/start/i.test(e.type)) {
-        $(path.node).siblings('path').each(function () {
+        $(path).siblings('path').each(function () {
           if (this.nodeName) {
-            path.animate({
-              transform: 's1 1 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
-            }, settings.animation_speed, mina[settings.animation_type]);
-            Snap($(this).next()[0]).animate({
-              opacity: 0
-            }, settings.animation_speed);
+            path.setAttribute('transform', 'matrix(1,0,0,1,0,0)');
+            $(this).next()[0].setAttribute('fill-opacity', 0);
           }
         });
       }
 
       if (/enter|start/i.test(e.type)) {
-        path.animate({
-          transform: 's1.05 1.05 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
-        }, settings.animation_speed, mina[settings.animation_type]);
+        path.setAttribute('transform', 'matrix(1.05, 0, 0, 1.05, -5.1, -5.1)');
 
         if (settings.show_text) {
-          text.animate({
-            opacity: 1
-          }, settings.animation_speed);
+          text.setAttribute('fill-opacity', 1);
         }
       } else {
-        path.animate({
-          transform: 's1 1 ' + path.node.getAttribute('data-cx') + ' ' + path.node.getAttribute('data-cy')
-        }, settings.animation_speed, mina[settings.animation_type]);
-        text.animate({
-          opacity: 0
-        }, settings.animation_speed);
+        path.setAttribute('transform', 'matrix(1,0,0,1,0,0)');
+        text.setAttribute('fill-opacity', 1);
       }
     });
   },
 
-  build : function(legends, options) {
-    var self = this, legend = legends, graph;
+  build : function(legend, options) {
+    legend.data('settings', $.extend({}, this.settings, options, legend.data('options')));
 
-    legend.data('settings', $.extend({}, self.settings, options, legend.data('options')));
-    self.data(legend, options || {});
+    this.data(legend, options || {});
 
     if (legend.data('pie-id')) {
-      self.update_DOM(self.pie(legend));
+      this.update_DOM(this.pie(legend));
     } else if (legend.data('line-id')) {
-      self.update_DOM(self.line(legend));
+      this.update_DOM(this.line(legend));
     } else if (legend.data('bar-id')) {
-      self.update_DOM(self.bar(legend));
+      this.update_DOM(this.bar(legend));
     }
   },
 
@@ -139,44 +127,25 @@ var Pizza = {
 
   animate : function (el, cx, cy, settings) {
     var self = this;
+    $(el).hover(function (e) {
+      var path = e.target,
+          text = $(path).parent().find('text[data-id="' + path.getAttribute('data-id') + '"]')[0];
 
-    el.hover(function (e) {
-      var path = Snap(e.target),
-          text = Snap($(path.node).parent()
-            .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]);
+      var scaling = 1.05,
+          sx = cx - scaling * cx,
+          sy = cy - scaling * cy;
 
-      path.animate({
-        transform: 's1.05 1.05 ' + cx + ' ' + cy
-      }, settings.animation_speed, mina[settings.animation_type]);
+      $(path).parent()[0].setAttribute('transform', 'matrix(1.05, 0, 0, 1.05,'+sx+','+sy +')')
+      text.setAttribute('fill-opacity', 1);
 
-      text.touchend(function () {
-        path.animate({
-          transform: 's1.05 1.05 ' + cx + ' ' + cy
-        }, settings.animation_speed, mina[settings.animation_type]);
-      });
-
-      if (settings.show_text) {
-        text.animate({
-          opacity: 1
-        }, settings.animation_speed);
-        text.touchend(function () {
-          text.animate({
-            opacity: 1
-          }, settings.animation_speed);
-        });
-      }
     }, function (e) {
-      var path = Snap(e.target),
-          text = Snap($(path.node).parent()
-            .find('text[data-id="' + path.node.getAttribute('data-id') + '"]')[0]);
+      var path = e.target,
+          text = $(path).parent()
+            .find('text[data-id="' + path.getAttribute('data-id') + '"]')[0];
+      $(path).parent()[0].setAttribute('transform', 'matrix(1, 0, 0, 1, 0, 0)')
+      // path.setAttribute('transform', 'matrix(1,0,0,1,0,0)');
+      text.setAttribute('fill-opacity', 0);
 
-      path.animate({
-        transform: 's1 1 ' + cx + ' ' + cy
-      }, settings.animation_speed, mina[settings.animation_type]);
-
-      text.animate({
-        opacity: 0
-      }, settings.animation_speed);
     });
   },
 
@@ -205,14 +174,16 @@ var Pizza = {
         height = width;
 
     if (svg.length > 0) {
-      svg = Snap(svg[0]);
+      svg = svg[0];
     } else {
-      svg = Snap(width, height);
+      var svg = this.svg_obj('svg');
+      svg.width = width;
+      svg.height = height;
     }
 
-    svg.node.setAttribute('width', '100%');
-    svg.node.setAttribute('height', '100%');
-    svg.node.setAttribute('viewBox', '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', '100%');
+    svg.setAttribute('viewBox', '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
       (width + (settings.percent_offset * 1.5)) + ' ' + 
       (height + (settings.percent_offset * 1.5)));
 
@@ -233,6 +204,17 @@ var Pizza = {
         fun.apply(context, args);
       }, delay);
     };
+  },
+
+  transform : function(point, matrix) {
+    var x, y;
+    x = point.x;
+    y = point.y;
+    return {x:matrix.a * x + matrix.c * y + matrix.e,y: matrix.b * x + matrix.d * y + matrix.f};
+  },
+
+  svg_obj : function (type) {
+    return document.createElementNS(this.NS, type);
   },
 
   ticks: function (min, max, count) {
@@ -258,3 +240,30 @@ var Pizza = {
     return ticks;
   }
 };
+
+function Matrix(a, b, c, d, e, f) {
+    if (b == null && Object.prototype.toString.call(a) == "[object SVGMatrix]") {
+        this.a = a.a;
+        this.b = a.b;
+        this.c = a.c;
+        this.d = a.d;
+        this.e = a.e;
+        this.f = a.f;
+        return;
+    }
+    if (a != null) {
+        this.a = +a;
+        this.b = +b;
+        this.c = +c;
+        this.d = +d;
+        this.e = +e;
+        this.f = +f;
+    } else {
+        this.a = 1;
+        this.b = 0;
+        this.c = 0;
+        this.d = 1;
+        this.e = 0;
+        this.f = 0;
+    }
+}

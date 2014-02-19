@@ -17,14 +17,13 @@ $.extend(Pizza, {
       total += data[i].value;
     }
 
-    var existing_group = $('g', svg.node);
+    var existing_group = $('g', svg);
 
     if (existing_group.length > 0) {
-      // return [legend, svg.node];
       $(existing_group[0]).children().remove();
-      var g = Snap(existing_group[0]);
+      var g = existing_group[0];
     } else {
-      var g = svg.g();
+      var g = this.svg_obj('g');
     }
 
     if (settings.show_grid) {
@@ -33,11 +32,11 @@ $.extend(Pizza, {
 
     // svg.node.setAttribute('preserveAspectRatio', 'none');
 
-    g.node.setAttribute('transform', 'translate(0, ' + (base_height) +') scale(1, -1)');
+    g.setAttribute('transform', 'translate(0, ' + (base_height) +') scale(1, -1)');
 
     for (var i = 0; i < data.length; i++) {
       var y = (base_height) * (data[i].value / max),
-          rect = svg.rect();
+          rect = this.svg_obj('rect');
 
       if (current_offset === 0) {
         var new_offset = current_offset;
@@ -45,20 +44,22 @@ $.extend(Pizza, {
         var new_offset = current_offset + settings.bar_spacer;
       }
 
-      rect.node.setAttribute('x', new_offset);
-      rect.node.setAttribute('y', 0);
-      rect.node.setAttribute('width', interval);
-      rect.node.setAttribute('height', y);
-      rect.node.setAttribute('fill', data[i].color);
-      rect.node.setAttribute('stroke', '#222222');
-      rect.node.setAttribute('stroke-width', 2);
+      rect.setAttribute('x', new_offset);
+      rect.setAttribute('y', 0);
+      rect.setAttribute('width', interval);
+      rect.setAttribute('height', y);
+      rect.setAttribute('fill', data[i].color);
+      rect.setAttribute('stroke', '#222222');
+      rect.setAttribute('stroke-width', 2);
 
       current_offset = new_offset + interval;
 
-      g.add(rect);
+      g.appendChild(rect);
     }
 
-    return [legend, svg.node];
+    svg.appendChild(g);
+
+    return [legend, svg];
   },
 
   assemble_grid : function (g, svg, min, max, width, height, settings) {
@@ -68,12 +69,20 @@ $.extend(Pizza, {
 
     while (i--) {
       var line_height = total_tick_height + (height/(ticks_length-1));
-      var line = svg.line(0, line_height, width, line_height);
-      var text = g.text(-25, line_height, ticks[i]);
-      text.node.setAttribute('transform', 'rotate(-180 -5 260) scale(-1 1)');
-      line.node.setAttribute("stroke", "gray");
-      line.node.setAttribute("stroke-width", "1");
-      g.add(line);
+      var line = this.svg_obj('line');
+      line.setAttribute('x1', 0);
+      line.setAttribute('x2', width);
+      line.setAttribute('y1', line_height);
+      line.setAttribute('y2', line_height)
+      var text = this.svg_obj('text');
+      text.setAttribute('x', -25);
+      text.setAttribute('y', line_height);
+      text.innerHTML = ticks[i];
+      text.setAttribute('transform', 'rotate(-180 -5 260) scale(-1 1)');
+      line.setAttribute("stroke", "gray");
+      line.setAttribute("stroke-width", "1");
+      g.appendChild(line);
+      g.appendChild(text);
       total_tick_height = line_height;
     }
 
