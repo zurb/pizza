@@ -63,14 +63,20 @@ var Pizza = {
       }
 
       if (/enter|start/i.test(e.type)) {
-        path.setAttribute('transform', 'matrix(1.05, 0, 0, 1.05, -5.1, -5.1)');
+        var scaling = 1.05,
+          cx = path.getAttribute('data-cx'),
+          cy = path.getAttribute('data-cy'),
+          sx = cx - scaling * cx,
+          sy = cy - scaling * cy;
+
+        $(path).parent()[0].setAttribute('transform', 'matrix(1.05, 0, 0, 1.05,' + sx + ',' + sy +')');
 
         if (settings.show_text) {
           text.setAttribute('fill-opacity', 1);
         }
       } else {
-        path.setAttribute('transform', 'matrix(1,0,0,1,0,0)');
-        text.setAttribute('fill-opacity', 1);
+        $(path).parent()[0].setAttribute('transform', 'matrix(1,0,0,1,0,0)');
+        text.setAttribute('fill-opacity', 0);
       }
     });
   },
@@ -131,11 +137,13 @@ var Pizza = {
       var path = e.target,
           text = $(path).parent().find('text[data-id="' + path.getAttribute('data-id') + '"]')[0];
 
+      Pizza.anim(path, 'matrix', 10, 1, 3000, 'elastic', function () {console.log('done');});
+
       var scaling = 1.05,
           sx = cx - scaling * cx,
           sy = cy - scaling * cy;
 
-      $(path).parent()[0].setAttribute('transform', 'matrix(1.05, 0, 0, 1.05,'+sx+','+sy +')')
+      $(path).parent()[0].setAttribute('transform', 'matrix(1.05, 0, 0, 1.05,' + sx + ',' + sy +')');
       text.setAttribute('fill-opacity', 1);
 
     }, function (e) {
@@ -143,7 +151,6 @@ var Pizza = {
           text = $(path).parent()
             .find('text[data-id="' + path.getAttribute('data-id') + '"]')[0];
       $(path).parent()[0].setAttribute('transform', 'matrix(1, 0, 0, 1, 0, 0)')
-      // path.setAttribute('transform', 'matrix(1,0,0,1,0,0)');
       text.setAttribute('fill-opacity', 0);
 
     });
@@ -206,13 +213,6 @@ var Pizza = {
     };
   },
 
-  transform : function(point, matrix) {
-    var x, y;
-    x = point.x;
-    y = point.y;
-    return {x:matrix.a * x + matrix.c * y + matrix.e,y: matrix.b * x + matrix.d * y + matrix.f};
-  },
-
   svg_obj : function (type) {
     return document.createElementNS(this.NS, type);
   },
@@ -240,30 +240,3 @@ var Pizza = {
     return ticks;
   }
 };
-
-function Matrix(a, b, c, d, e, f) {
-    if (b == null && Object.prototype.toString.call(a) == "[object SVGMatrix]") {
-        this.a = a.a;
-        this.b = a.b;
-        this.c = a.c;
-        this.d = a.d;
-        this.e = a.e;
-        this.f = a.f;
-        return;
-    }
-    if (a != null) {
-        this.a = +a;
-        this.b = +b;
-        this.c = +c;
-        this.d = +d;
-        this.e = +e;
-        this.f = +f;
-    } else {
-        this.a = 1;
-        this.b = 0;
-        this.c = 0;
-        this.d = 1;
-        this.e = 0;
-        this.f = 0;
-    }
-}

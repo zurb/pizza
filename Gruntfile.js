@@ -36,7 +36,7 @@ module.exports = function(grunt) {
       dist: {
         files: {
           'dist/js/pizza.min.js': ['<%= pizza.js %>'],
-          'dist/js/vendor/dependencies.js': ['bower_components/jquery/jquery.js', 'bower_components/Snap.svg/dist/snap.svg.js'],
+          'dist/js/vendor/dependencies.js': ['bower_components/jquery/jquery.js'],
           'dist/js/vendor/modernizr.js': ['bower_components/modernizr/modernizr.js']
         }
       }
