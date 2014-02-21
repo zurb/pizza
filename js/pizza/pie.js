@@ -115,6 +115,7 @@ $.extend(Pizza, {
       g.appendChild(path);
       g.appendChild(text);
       svg.appendChild(g);
+      g.setAttribute('transform', 'matrix(1,0,0,1,0,0)');
 
       this.animate(path, cx, cy, settings);
 

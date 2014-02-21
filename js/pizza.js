@@ -64,10 +64,10 @@ var Pizza = {
 
       if (/enter|start/i.test(e.type)) {
         var scaling = 1.05,
-          cx = path.getAttribute('data-cx'),
-          cy = path.getAttribute('data-cy'),
-          sx = cx - scaling * cx,
-          sy = cy - scaling * cy;
+            cx = path.getAttribute('data-cx'),
+            cy = path.getAttribute('data-cy'),
+            sx = cx - scaling * cx,
+            sy = cy - scaling * cy;
 
         $(path).parent()[0].setAttribute('transform', 'matrix(1.05, 0, 0, 1.05,' + sx + ',' + sy +')');
 
@@ -135,24 +135,18 @@ var Pizza = {
     var self = this;
     $(el).hover(function (e) {
       var path = e.target,
-          text = $(path).parent().find('text[data-id="' + path.getAttribute('data-id') + '"]')[0];
+          text = path.nextSibling;
 
-      Pizza.anim(path, 'matrix', 10, 1, 3000, 'elastic', function () {console.log('done');});
-
-      var scaling = 1.05,
-          sx = cx - scaling * cx,
-          sy = cy - scaling * cy;
-
-      $(path).parent()[0].setAttribute('transform', 'matrix(1.05, 0, 0, 1.05,' + sx + ',' + sy +')');
+      Pizza.scale(path.parentNode, 1.05, 300, 'linear', cx, cy);
       text.setAttribute('fill-opacity', 1);
 
     }, function (e) {
       var path = e.target,
-          text = $(path).parent()
-            .find('text[data-id="' + path.getAttribute('data-id') + '"]')[0];
-      $(path).parent()[0].setAttribute('transform', 'matrix(1, 0, 0, 1, 0, 0)')
-      text.setAttribute('fill-opacity', 0);
+          text = path.nextSibling;
 
+      Pizza.scale(path.parentNode, 1, 300, 'linear', cx, cy);
+
+      text.setAttribute('fill-opacity', 0);
     });
   },
 
