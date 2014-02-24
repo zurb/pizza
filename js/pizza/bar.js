@@ -97,7 +97,5 @@ $.extend(Pizza, {
 
   },
 
-  bar_events : function () {
-
-  }
+  bar_events : function () {}
 });

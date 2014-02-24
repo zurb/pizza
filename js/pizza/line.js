@@ -2,16 +2,13 @@ $.extend(Pizza, {
   line : function (legend) {
     var settings = legend.data('settings'),
         svg = this.svg(legend, settings),
-        data = legend.data('graph-data'),
-        max_x = max_y = min_x = min_y = 0,
         container = $(this.identifier(legend)),
-        base_width = container.outerWidth(),
-        base_height = container.outerHeight(),
-        interval = base_width / data.length,
-        x_offset = 0,
-        total_x = total_y = 0,
-        points = '',
-        circles = [];
+        width = container.outerWidth(),
+        height = container.outerHeight(),
+        data = legend.data('graph-data'),
+        max_x = max_y = min_x = min_y = total_x = total_y = 0,
+        i = data.length,
+        points = '';
 
     for (var i = 0; i < data.length; i++) {
       if (data[i].x > max_x) max_x = data[i].x;
@@ -22,78 +19,76 @@ $.extend(Pizza, {
       total_y += data[i].y;
     }
 
-    var existing_group = $('g', svg);
-
-    if (existing_group.length > 0) {
-      $(existing_group[0]).children().remove();
-      var g = existing_group[0];
-    } else {
-      var g = this.svg_obj('g');
-    }
-
-    this.flip(svg, base_height);
-
-    if (settings.show_grid) {
-      this.assemble_grid_x(g, svg, min_x, max_x, base_width, base_height, settings);
-      this.assemble_grid_y(g, svg, min_y, max_y, base_width, base_height, settings);
-    }
+    var polyline = this.svg_obj('polyline'),
+        line_g = this.svg_obj('g'),
+        circle_g = this.svg_obj('g');
 
     for (var i = 0; i < data.length; i++) {
-      var x = (data[i].x / max_x) * base_width,
-          y = (data[i].y / max_y) * base_height;
+      var x = (data[i].x / max_x) * width,
+          y = (data[i].y / max_y) * height,
+          circle = this.svg_obj('circle');
 
       points += x + ',' + y + ' ';
-      var circle = this.svg_obj('circle');
-      this.set_attr(circle, {cx: x,cy: y,r: 4,fill: data[i.color]});
+      this.set_attr(circle, {cx: x, cy: y,r: 4,fill: data[i.color]});
 
-      circles.push(circle);
+      circle_g.appendChild(circle);
     }
 
-    var polyline = this.svg_obj('polyline');
+    this.flip(circle_g, height);
+    this.flip(line_g, height);
+
+    if (settings.show_grid) {
+      this.assemble_grid_x(svg, min_x, max_x, width, height, settings);
+      this.assemble_grid_y(svg, min_y, max_y, width, height, settings);
+    }
 
     this.set_attr(polyline, {points:points, fill: 'none', stroke: 'black', 'stroke-width': 2});
-    this.flip(g, base_height)
 
-    g.appendChild(polyline);
-
-    for (var i = 0; i < circles.length; i++) {
-      g.appendChild(circles[i]);
-    }
-
-    svg.appendChild(g);
+    line_g.appendChild(polyline);
+    svg.appendChild(line_g);
+    svg.appendChild(circle_g);
 
     return [legend, svg];
   },
 
-  assemble_grid_x : function (g, svg, min, max, width, height, settings) {
-    var ticks = this.ticks(min, max, settings.bar_intervals),
-        ticks_length = i = ticks.length;
+  assemble_grid_x : function (svg, min, max, width, height, settings) {
+    var text_g = this.svg_obj('g'),
+        ticks = this.ticks(min, max, settings.bar_intervals).reverse(),
+        ticks_length = i = ticks.length,
+        total_tick_width = 0,
+        interval = width/(ticks_length-1);
 
-    // console.log('ticks_x: ', ticks);
+    while (i--) {
+      var line_width = total_tick_width + interval,
+          text = this.svg_obj('text');
 
-    // while (i--) {
-    //   var line_height = total_tick_height + (height/(ticks_length-1));
-    //   var line = svg.line(0, line_height, width, line_height);
-    //   var text = g.text(-25, line_height, ticks[i]);
-    //   text.node.setAttribute('transform', 'rotate(-180 -5 260) scale(-1 1)');
-    //   line.node.setAttribute("stroke", "gray");
-    //   line.node.setAttribute("stroke-width", "1");
-    //   g.add(line);
-    //   total_tick_height = line_height;
-    // }
+      this.set_attr(text, {
+        y: height + 20,
+        x: line_width - interval,
+        'text-anchor': 'middle'
+      });
 
+      text.innerHTML = ticks[i];
+
+      text_g.appendChild(text);
+      total_tick_width = line_width;
+    }
+
+    svg.appendChild(text_g);
   },
 
-  assemble_grid_y : function (g, svg, min, max, width, height, settings) {
-    var ticks = this.ticks(min, max, settings.bar_intervals),
+  assemble_grid_y : function (svg, min, max, width, height, settings) {
+    var line_g = this.svg_obj('g'),
+        text_g = this.svg_obj('g'),
+        ticks = this.ticks(min, max, settings.bar_intervals),
         ticks_length = i = ticks.length,
         total_tick_height = 0;
 
     while (i--) {
-      var line_height = total_tick_height + (height/ticks_length),
+      var line_height = total_tick_height + (height/(ticks_length-1)),
           line = this.svg_obj('line'),
           text = this.svg_obj('text');
-      // console.log(line_height, height)
+
       this.set_attr(line, {
           x1 : 0,
           x2 : width,
@@ -106,20 +101,22 @@ $.extend(Pizza, {
           x : -5,
           y : line_height,
           'text-anchor': 'end'
-          // transform : 'rotate(-180 0 270) scale(-1 1)'
         });
 
       text.innerHTML = ticks[i];
 
-      svg.appendChild(line);
-      svg.appendChild(text);
+      line_g.appendChild(line);
+      text_g.appendChild(text);
       total_tick_height = line_height;
-      console.log(total_tick_height)
     }
+
+    line_g.setAttribute('transform', 'translate(0, -' + total_tick_height / ticks_length + ')');
+    text_g.setAttribute('transform', 'translate(0, -' + total_tick_height / ticks_length + ')');
+
+    svg.appendChild(line_g);
+    svg.appendChild(text_g);
 
   },
 
-  line_events : function () {
-
-  }
+  line_events : function () {}
 });
