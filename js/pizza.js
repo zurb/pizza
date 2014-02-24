@@ -232,5 +232,9 @@ var Pizza = {
     }
 
     return this;
+  },
+
+  flip : function (node, h) {
+    node.setAttribute('transform', 'translate(0, ' + h +') scale(1, -1)');
   }
 };

@@ -31,7 +31,7 @@ $.extend(Pizza, {
       var g = this.svg_obj('g');
     }
 
-    g.setAttribute('transform', 'translate(0, ' + base_height +') scale(1, -1)');
+    this.flip(svg, base_height);
 
     if (settings.show_grid) {
       this.assemble_grid_x(g, svg, min_x, max_x, base_width, base_height, settings);
@@ -52,6 +52,7 @@ $.extend(Pizza, {
     var polyline = this.svg_obj('polyline');
 
     this.set_attr(polyline, {points:points, fill: 'none', stroke: 'black', 'stroke-width': 2});
+    this.flip(g, base_height)
 
     g.appendChild(polyline);
 
@@ -68,7 +69,7 @@ $.extend(Pizza, {
     var ticks = this.ticks(min, max, settings.bar_intervals),
         ticks_length = i = ticks.length;
 
-    console.log('ticks_x: ', ticks);
+    // console.log('ticks_x: ', ticks);
 
     // while (i--) {
     //   var line_height = total_tick_height + (height/(ticks_length-1));
@@ -88,13 +89,11 @@ $.extend(Pizza, {
         ticks_length = i = ticks.length,
         total_tick_height = 0;
 
-    console.log('ticks_y: ', ticks);
-
     while (i--) {
-      var line_height = total_tick_height + (height/(ticks_length -1)),
+      var line_height = total_tick_height + (height/ticks_length),
           line = this.svg_obj('line'),
           text = this.svg_obj('text');
-
+      // console.log(line_height, height)
       this.set_attr(line, {
           x1 : 0,
           x2 : width,
@@ -104,16 +103,18 @@ $.extend(Pizza, {
           'stroke-width' : 1
         })
         .set_attr(text, {
-          x : -25,
+          x : -5,
           y : line_height,
-          transform : 'rotate(-180 0 270) scale(-1 1)'
+          'text-anchor': 'end'
+          // transform : 'rotate(-180 0 270) scale(-1 1)'
         });
 
       text.innerHTML = ticks[i];
 
-      g.appendChild(line);
-      g.appendChild(text);
+      svg.appendChild(line);
+      svg.appendChild(text);
       total_tick_height = line_height;
+      console.log(total_tick_height)
     }
 
   },
