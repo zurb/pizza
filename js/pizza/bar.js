@@ -44,13 +44,15 @@ $.extend(Pizza, {
         var new_offset = current_offset + settings.bar_spacer;
       }
 
-      rect.setAttribute('x', new_offset);
-      rect.setAttribute('y', 0);
-      rect.setAttribute('width', interval);
-      rect.setAttribute('height', y);
-      rect.setAttribute('fill', data[i].color);
-      rect.setAttribute('stroke', '#222222');
-      rect.setAttribute('stroke-width', 2);
+      this.set_attr(rect, {
+        x : new_offset,
+        y : 0,
+        width : interval,
+        height : y,
+        fill : data[i].color,
+        stroke : '#222222',
+        'stroke-width' : 2
+      });
 
       current_offset = new_offset + interval;
 
@@ -68,23 +70,34 @@ $.extend(Pizza, {
         total_tick_height = 0;
 
     while (i--) {
-      var line_height = total_tick_height + (height/(ticks_length-1));
-      var line = this.svg_obj('line');
-      line.setAttribute('x1', 0);
-      line.setAttribute('x2', width);
-      line.setAttribute('y1', line_height);
-      line.setAttribute('y2', line_height)
-      var text = this.svg_obj('text');
-      text.setAttribute('x', -25);
-      text.setAttribute('y', line_height);
+      var line_height = total_tick_height + (height/(ticks_length-1)),
+          line = this.svg_obj('line'),
+          text = this.svg_obj('text');
+
+      this.set_attr(line, {
+          x1: 0,
+          x2: width,
+          y1: line_height,
+          y2: line_height,
+          stroke: 'gray',
+          'stroke-width' : 1
+        })
+        .set_attr(text, {
+          x: -25,
+          y: line_height,
+          transform : 'rotate(-180 -5 260) scale(-1 1)'
+        })
+
       text.innerHTML = ticks[i];
-      text.setAttribute('transform', 'rotate(-180 -5 260) scale(-1 1)');
-      line.setAttribute("stroke", "gray");
-      line.setAttribute("stroke-width", "1");
+
       g.appendChild(line);
       g.appendChild(text);
       total_tick_height = line_height;
     }
+
+  },
+
+  bar_events : function () {
 
   }
 });

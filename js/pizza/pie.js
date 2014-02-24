@@ -87,9 +87,13 @@ $.extend(Pizza, {
       text.setAttribute('x', text.getAttribute('x') - left_offset);
 
       if (settings.always_show_text) {
-        text.setAttribute('fill-opacity', 1);
+        Snap(text).animate({
+          opacity: 1
+        }, settings.animation_speed);
       } else {
-        text.setAttribute('fill-opacity', 0);
+        Snap(text).attr({
+          opacity: 0
+        }, settings.animation_speed);
       }
 
       text.setAttribute('data-id', 's' + i);
@@ -115,7 +119,6 @@ $.extend(Pizza, {
       g.appendChild(path);
       g.appendChild(text);
       svg.appendChild(g);
-      g.setAttribute('transform', 'matrix(1,0,0,1,0,0)');
 
       this.animate(path, cx, cy, settings);
 
@@ -171,5 +174,48 @@ $.extend(Pizza, {
 
       return o2;
     }
+  },
+
+  pie_events : function () {
+    var self = this;
+
+    $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
+      var parent = $(this).parent(),
+          path = $('#' + parent.data('pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0],
+          text = path.nextSibling,
+          settings = $(this).parent().data('settings');
+
+      if (/start/i.test(e.type)) {
+        $(path).siblings('path').each(function () {
+          if (this.nodeName) {
+            Snap(path).animate({
+              transform: 's1 1 ' + path.getAttribute('data-cx') + ' ' + path.getAttribute('data-cy')
+            }, settings.animation_speed, mina[settings.animation_type]);
+            Snap($(this).next()[0]).animate({
+              opacity: 0
+            }, settings.animation_speed);
+          }
+        });
+      }
+
+      if (/enter|start/i.test(e.type)) {
+        Snap(path).animate({
+          transform: 's1.05 1.05 ' + path.getAttribute('data-cx') + ' ' + path.getAttribute('data-cy')
+        }, settings.animation_speed, mina[settings.animation_type]);
+
+        if (settings.show_text) {
+          Snap(text).animate({
+            opacity: 1
+          }, settings.animation_speed);
+        }
+      } else {
+        Snap(path).animate({
+          transform: 's1 1 ' + path.getAttribute('data-cx') + ' ' + path.getAttribute('data-cy')
+        }, settings.animation_speed, mina[settings.animation_type]);
+        Snap(text).animate({
+          opacity: 0
+        }, settings.animation_speed);
+      }
+    });
   }
 });
