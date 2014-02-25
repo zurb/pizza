@@ -41,9 +41,9 @@ var Pizza = {
   events : function () {
     var self = this;
 
-    // $(window).off('.pizza').on('resize.pizza', self.throttle(function () {
-    //   self.init();
-    // }, 500));
+    $(window).off('.pizza').on('resize.pizza', self.throttle(function () {
+      self.init();
+    }, 500));
 
     this.pie_events();
     this.line_events();
@@ -170,7 +170,8 @@ var Pizza = {
     var container = $(this.identifier(legend)),
         svg = $('svg', container),
         width = container.width(),
-        height = width;
+        pie = legend.attr('data-pie-id'),
+        height = container.height();
 
     if (svg.length > 0) {
       svg = svg[0];
@@ -180,9 +181,16 @@ var Pizza = {
       svg.height = height;
     }
 
-    var view_box = '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
+    if (pie) {
+      console.log(pie)
+      var view_box = '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
+      (width + (settings.percent_offset * 1.5)) + ' ' + 
+      (width + (settings.percent_offset * 1.5));
+    } else {
+      var view_box = '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
       (width + (settings.percent_offset * 1.5)) + ' ' + 
       (height + (settings.percent_offset * 1.5));
+    }
 
     this.set_attr(svg, {width: '100%', height: '100%', viewBox: view_box});
 

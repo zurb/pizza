@@ -8,7 +8,8 @@ $.extend(Pizza, {
         total = 0,
         angles = [],
         start_angle = 0,
-        base = $(this.identifier(legend)).width() - 4;
+        container = $(this.identifier(legend)),
+        base = container.outerWidth();
 
     for (var i = 0; i < data.length; i++) {
       total += data[i].value;
@@ -85,6 +86,8 @@ $.extend(Pizza, {
       var left_offset = text.getBBox().width / 2;
 
       text.setAttribute('x', text.getAttribute('x') - left_offset);
+
+      text.setAttribute('text-anchor', 'middle')
 
       if (settings.always_show_text) {
         Snap(text).animate({

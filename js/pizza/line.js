@@ -146,8 +146,8 @@ $.extend(Pizza, {
           'stroke-dasharray' : '5,5'
         })
         .set_attr(text, {
-          x : -5,
-          y : line_height,
+          x : -8,
+          y : line_height + 5,
           'text-anchor': 'end'
         });
 
