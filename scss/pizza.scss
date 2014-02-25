@@ -1,5 +1,5 @@
 // Pie Chart Variables
-$pie-color: #107af1 !default;
+$pie-color: #f45c5c !default;
 
 
 @mixin darkened-children($num-children, $color) {
@@ -21,7 +21,7 @@ $pie-color: #107af1 !default;
 }
 
 [data-pie-id], [data-bar-id], [data-line-id] {
-  @include darkened-children(10, $pie-color);
+  @include darkened-children(7, $pie-color);
 }
 
 // Set the SVG to 100% width to smooth responsive resizing (optional)
