@@ -64,6 +64,8 @@ var Pizza = {
     } else if (legend.data('bar-id')) {
       this.update_DOM(this.bar(legend));
     }
+
+    $(this.scope).triggerHandler('pizza:ready');
   },
 
   data : function (legend, options) {
@@ -102,19 +104,22 @@ var Pizza = {
     return $(this.identifier(legend)).html(graph);
   },
 
-  animate : function (el, cx, cy, settings) {
-    var self = this;
+  animate : function (el, cx, cy, settings, scale) {
+    var self = this,
+        scale = scale || 1.05;
     $(el).hover(function (e) {
       var path = Snap(e.target),
           text = Snap(path.node.nextSibling);
 
       path.animate({
-        transform: 's1.05 1.05 ' + cx + ' ' + cy
+        transform: 's' + scale + ' ' + scale + ' ' + cx + ' ' + cy
       }, settings.animation_speed, mina[settings.animation_type]);
+
+      if (!/text/.test(text.node.nodeName)) return;
 
       text.touchend(function () {
         Snap(path).animate({
-          transform: 's1.05 1.05 ' + cx + ' ' + cy
+          transform: 's' + scale + ' ' + scale + ' ' + cx + ' ' + cy
         }, settings.animation_speed, mina[settings.animation_type]);
       });
 
@@ -136,6 +141,8 @@ var Pizza = {
       path.animate({
         transform: 's1 1 ' + cx + ' ' + cy
       }, settings.animation_speed, mina[settings.animation_type]);
+
+      if (!/text/.test(text.node.nodeName)) return;
 
       text.animate({
         opacity: 0

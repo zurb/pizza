@@ -29,7 +29,14 @@ $.extend(Pizza, {
           circle = this.svg_obj('circle');
 
       points += x + ',' + y + ' ';
-      this.set_attr(circle, {cx: x, cy: y,r: 4,fill: data[i.color]});
+      this.set_attr(circle, {cx: x, cy: y,r: 4,fill: data[i.color],
+        'data-value': x + ', ' + y,
+        'data-tooltip': '',
+        'title': x + ', ' + y,
+        'class': 'has-tip tip-top',
+        'data-id': 'pL' + i});
+
+      this.animate(circle, x, y, settings, 2);
 
       circle_g.appendChild(circle);
     }
@@ -118,5 +125,33 @@ $.extend(Pizza, {
 
   },
 
-  line_events : function () {}
+  line_events : function () {
+    $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-line-id] li', function (e) {
+      var parent = $(this).parent(),
+          path = $('#' + parent.data('line-id') + ' circle[data-id="pL' + $(this).index() + '"]')[0],
+          settings = $(this).parent().data('settings');
+
+      if (/start/i.test(e.type)) {
+        $(path).siblings('circle').each(function () {
+          if (this.nodeName) {
+            Snap(path).animate({
+              transform: 's1 1 ' + path.getAttribute('cx') + ' ' + path.getAttribute('cy')
+            }, settings.animation_speed, mina[settings.animation_type]);
+          }
+        });
+      }
+
+      if (/enter|start/i.test(e.type)) {
+        Snap(path).animate({
+          transform: 's2 2 ' + path.getAttribute('cx') + ' ' + path.getAttribute('cy')
+        }, settings.animation_speed, mina[settings.animation_type]);
+        $(path).trigger('mouseenter')
+      } else {
+        Snap(path).animate({
+          transform: 's1 1 ' + path.getAttribute('cx') + ' ' + path.getAttribute('cy')
+        }, settings.animation_speed, mina[settings.animation_type]);
+        $(path).trigger('mouseout')
+      }
+    });
+  }
 });
