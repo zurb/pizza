@@ -53,14 +53,13 @@ $.extend(Pizza, {
       var existing_path = $('path[data-id="s' + i + '"]', svg);
 
       if (existing_path.length > 0) {
-        return [legend, svg];
+        var path = existing_path[0];
       } else {
-        var path = this.svg_obj('path')
+        var path = this.svg_obj('path');
       }
 
       var percent = (data[i].value / total) * 100.0;
 
-      // thanks to Raphael.js
       var existing_text = $('text[data-id="s' + i + '"]', svg);
 
       if (existing_text.length > 0) {
@@ -113,12 +112,19 @@ $.extend(Pizza, {
       path.setAttribute('data-cx', cx);
       path.setAttribute('data-cy', cy);
       path.setAttribute('data-id', 's' + i);
-      var g = this.svg_obj('g');
-      g.appendChild(path);
-      g.appendChild(text);
-      svg.appendChild(g);
 
-      this.animate(path, cx, cy, settings);
+      var existing_group = $('g[data-id=g' + i + ']', svg);
+
+      if (existing_group.length < 1) {
+        var g = this.svg_obj('g');
+
+        g.setAttribute('data-id', 'g' + i);
+        g.appendChild(path);
+        g.appendChild(text);
+        svg.appendChild(g);
+
+        this.animate(path, cx, cy, settings);
+      }
 
       // The next wedge begins where this one ends
       start_angle = end_angle;
@@ -177,7 +183,7 @@ $.extend(Pizza, {
   pie_events : function () {
     var self = this;
 
-    $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
+    $(document).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
       var parent = $(this).parent(),
           path = $('#' + parent.attr('data-pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0],
           text = path.nextSibling,

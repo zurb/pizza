@@ -62,8 +62,6 @@ var Pizza = {
     } else if (legend.data('bar-id')) {
       this.update_DOM(this.bar(legend));
     }
-
-    $(this.scope).triggerHandler('pizza:ready');
   },
 
   data : function (legend, options) {
@@ -104,48 +102,52 @@ var Pizza = {
 
   animate : function (el, cx, cy, settings, scale) {
     var self = this,
+        $el = $(el),
         scale = scale || 1.05;
-    $(el).hover(function (e) {
-      var path = Snap(e.target),
-          text = Snap(path.node.nextSibling);
 
-      path.animate({
-        transform: 's' + scale + ' ' + scale + ' ' + cx + ' ' + cy
-      }, settings.animation_speed, mina[settings.animation_type]);
+    $el.on('mouseenter', function (e) {
+        var path = Snap(e.target),
+            text = Snap(path.node.nextSibling);
 
-      if (!/text/.test(text.node.nodeName)) return;
-
-      text.touchend(function () {
-        Snap(path).animate({
+        path.animate({
           transform: 's' + scale + ' ' + scale + ' ' + cx + ' ' + cy
         }, settings.animation_speed, mina[settings.animation_type]);
-      });
 
-      if (settings.show_text) {
-        text.animate({
-          opacity: 1
-        }, settings.animation_speed);
+        if (!/text/.test(text.node.nodeName)) return;
+
         text.touchend(function () {
+          Snap(path).animate({
+            transform: 's' + scale + ' ' + scale + ' ' + cx + ' ' + cy
+          }, settings.animation_speed, mina[settings.animation_type]);
+        });
+
+        if (settings.show_text) {
           text.animate({
             opacity: 1
           }, settings.animation_speed);
-        });
-      }
+          text.touchend(function () {
+            text.animate({
+              opacity: 1
+            }, settings.animation_speed);
+          });
+        }
 
-    }, function (e) {
-      var path = Snap(e.target),
-          text = Snap(path.node.nextSibling);
+      })
+      .on('mouseleave', function (e) {
+        var path = Snap(e.target),
+            text = Snap(path.node.nextSibling);
 
-      path.animate({
-        transform: 's1 1 ' + cx + ' ' + cy
-      }, settings.animation_speed, mina[settings.animation_type]);
+        path.animate({
+          transform: 's1 1 ' + cx + ' ' + cy
+        }, settings.animation_speed, mina[settings.animation_type]);
 
-      if (!/text/.test(text.node.nodeName)) return;
+        if (!/text/.test(text.node.nodeName)) return;
 
-      text.animate({
-        opacity: 0
-      }, settings.animation_speed);
-    });
+        text.animate({
+          opacity: 0
+        }, settings.animation_speed);
+      });
+
   },
 
   parse_options : function (string, percent, value) {
