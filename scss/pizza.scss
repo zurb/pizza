@@ -1,27 +1,26 @@
 // Pie Chart Variables
-$pie-color: blue !default;
-$label-color: green !default;
+$pie-color: #f45c5c !default;
 
-// number of items in your list
-$items-in-list: 6 !default;
-
-//Adjusts the Hue
-@function -modify-color($color, $counter, $depth: $items-in-list) {
-  @return adjust-hue($pie-color, $i * ($items-in-list * 3));
+@mixin darkened-children($num-children, $color) {
+  @for $i from 1 through $num-children {
+    $color: scale-color($color, $lightness: -10%);
+    & > *:nth-child(#{$num-children}n+#{$i}) { // This causes looping to occur after there are $num-children child elements.
+      color: $color;
+    }
+  }
 }
 
-//Adjusts the Saturation.
-// @function -modify-color($color, $counter, $depth: ($items-in-list + 1)) {
-//   @return lighten($pie-color, $i * ($items-in-list + 1));
-// }
-
-// The loop that steps through the li's and assigns them a different color
-$i: 0;
-@while $i < ($items-in-list + 1) {
-  [data-pie-id] li:nth-child(#{$i}) {
-    color: -modify-color($pie-color, $i);
+@mixin lightened-children($num-children, $color) {
+  @for $i from 1 through $num-children {
+    $color: scale-color($color, $lightness: 10%);
+    & > *:nth-child(#{$num-children}n+#{$i}) { // This causes looping to occur after there are $num-children child elements.
+      color: $color;
+    }
   }
-  $i: $i + 1;
+}
+
+[data-pie-id], [data-bar-id], [data-line-id] {
+  @include darkened-children(7, $pie-color);
 }
 
 // Set the SVG to 100% width to smooth responsive resizing (optional)
@@ -39,13 +38,13 @@ svg {
 }
 
 .tooltip {
-  margin-left: -3px;
+  margin-left: -5px;
   border-radius: 3px;
   padding: 5px;
 }
 
 // svg text {
-//   fill: $label-color;
+//  fill: $label-color;
 // }
 
 ul[data-pie-id] {
