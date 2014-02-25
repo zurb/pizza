@@ -9,7 +9,7 @@ var Pizza = {
     animation_speed: 500,
     always_show_text: false,
     show_grid: true,
-    bar_spacer: 50,
+    bar_spacer: 100,
     bar_intervals: 6,
     animation_type: 'elastic' // options: backin, backout, bounce, easein, 
                               //          easeinout, easeout, linear
@@ -104,41 +104,51 @@ var Pizza = {
 
   animate : function (el, cx, cy, settings, scale) {
     var self = this,
+        $el = $(el),
         scale = scale || 1.05;
-    $(el).hover(function (e) {
-      var path = Snap(e.target),
-          text = Snap(path.node.nextSibling);
 
-      path.animate({
-        transform: 's' + scale + ' ' + scale + ' ' + cx + ' ' + cy
-      }, settings.animation_speed, mina[settings.animation_type]);
+    $el.on('mouseenter', function (e) {
+        var path = Snap(e.target),
+            text = Snap(path.node.nextSibling);
 
-      if (!/text/.test(text.node.nodeName)) return;
-
-      text.touchend(function () {
-        Snap(path).animate({
+        path.animate({
           transform: 's' + scale + ' ' + scale + ' ' + cx + ' ' + cy
         }, settings.animation_speed, mina[settings.animation_type]);
-      });
 
-      if (settings.show_text) {
-        text.animate({
-          opacity: 1
-        }, settings.animation_speed);
+        if (!/text/.test(text.node.nodeName)) return;
+
         text.touchend(function () {
+          Snap(path).animate({
+            transform: 's' + scale + ' ' + scale + ' ' + cx + ' ' + cy
+          }, settings.animation_speed, mina[settings.animation_type]);
+        });
+
+        if (settings.show_text) {
           text.animate({
             opacity: 1
           }, settings.animation_speed);
-        });
-      }
+          text.touchend(function () {
+            text.animate({
+              opacity: 1
+            }, settings.animation_speed);
+          });
+        }
 
-    }, function (e) {
-      var path = Snap(e.target),
-          text = Snap(path.node.nextSibling);
+      })
+      .on('mouseleave', function (e) {
+        var path = Snap(e.target),
+            text = Snap(path.node.nextSibling);
 
-      path.animate({
-        transform: 's1 1 ' + cx + ' ' + cy
-      }, settings.animation_speed, mina[settings.animation_type]);
+        path.animate({
+          transform: 's1 1 ' + cx + ' ' + cy
+        }, settings.animation_speed, mina[settings.animation_type]);
+
+        if (!/text/.test(text.node.nodeName)) return;
+
+        text.animate({
+          opacity: 0
+        }, settings.animation_speed);
+      });
 
       if (!/text/.test(text.node.nodeName)) return;
 
@@ -170,7 +180,8 @@ var Pizza = {
     var container = $(this.identifier(legend)),
         svg = $('svg', container),
         width = container.width(),
-        height = width;
+        pie = legend.attr('data-pie-id'),
+        height = container.height();
 
     if (svg.length > 0) {
       svg = svg[0];
@@ -180,9 +191,15 @@ var Pizza = {
       svg.height = height;
     }
 
-    var view_box = '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
+    if (pie) {
+      var view_box = '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
       (width + (settings.percent_offset * 1.5)) + ' ' + 
-      (height + (settings.percent_offset * 1.5));
+      (width + (settings.percent_offset * 1.5));
+    } else {
+      var view_box = '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
+      (width + (settings.percent_offset * 1.6)) + ' ' + 
+      (height + (settings.percent_offset * 1.6));
+    }
 
     this.set_attr(svg, {width: '100%', height: '100%', viewBox: view_box});
 
