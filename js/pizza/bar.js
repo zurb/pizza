@@ -23,14 +23,13 @@ $.extend(Pizza, {
       total += data[i].value;
     }
 
-    var existing_group = $('g', svg);
+    var existing_group = $('g[data-id=bars]', svg);
 
     if (existing_group.length > 0) {
-      return [legend, svg];
-      $(existing_group[0]).children().remove();
       var g = existing_group[0];
     } else {
       var g = this.svg_obj('g');
+      g.setAttribute('data-id', 'bars');
     }
 
     if (settings.show_grid) {
@@ -40,8 +39,16 @@ $.extend(Pizza, {
     g.setAttribute('transform', 'translate(0, ' + (base_height) +') scale(1, -1)');
 
     for (var i = 0; i < data.length; i++) {
-      var y = (base_height) * (data[i].value / max),
-          rect = this.svg_obj('rect');
+      var y = (base_height) * (data[i].value / max);
+
+      var existing_rect = $('rect[data-id=r' + i +']', g);
+
+      if (existing_rect.length > 0) {
+        var rect = existing_rect[0];
+      } else {
+        var rect = this.svg_obj('rect');
+        rect.setAttribute('data-id', 'r' + i);
+      }
 
       if (current_offset === 0) {
         var new_offset = current_offset;
@@ -69,17 +76,37 @@ $.extend(Pizza, {
   },
 
   assemble_grid : function (svg, min, max, width, height, settings) {
-    var line_g = this.svg_obj('g'),
-        text_g = this.svg_obj('g'),
-        ticks = this.ticks(min, max, settings.bar_intervals),
+    var existing_group = $('g[data-id=bars]', svg);
+
+    if (existing_group.length > 0) {
+      var line_g = $('g[data-id=grid]', svg)[0],
+          text_g = $('g[data-id=labels]', svg)[0];
+    } else {
+      var line_g = this.svg_obj('g'),
+          text_g = this.svg_obj('g');
+
+      line_g.setAttribute('data-id', 'grid');
+      text_g.setAttribute('data-id', 'labels');
+    }
+
+    var ticks = this.ticks(min, max, settings.bar_intervals),
         ticks_length = i = ticks.length,
         interval = height/(ticks_length-1),
         total_tick_height = 0;
 
     while (i--) {
-      var line_height = total_tick_height + interval,
-          line = this.svg_obj('line'),
-          text = this.svg_obj('text');
+      if (existing_group.length > 0) {
+        var line = $('line[data-id=l' + i + ']', line_g)[0],
+            text = $('text[data-id=t' + i + ']', text_g)[0];
+      } else {
+        var line = this.svg_obj('line'),
+            text = this.svg_obj('text');
+
+        line.setAttribute('data-id', 'l' + i);
+        text.setAttribute('data-id', 't' + i);
+      }
+
+      var line_height = total_tick_height + interval;
 
       this.set_attr(line, {
           x1 : 0,
@@ -98,16 +125,21 @@ $.extend(Pizza, {
 
       text.innerHTML = ticks[i];
 
-      line_g.appendChild(line);
-      text_g.appendChild(text);
+      if (existing_group.length < 1) {
+        line_g.appendChild(line);
+        text_g.appendChild(text);
+      }
+      
       total_tick_height = line_height;
     }
 
     line_g.setAttribute('transform', 'translate(0, -' + total_tick_height / ticks_length + ')');
     text_g.setAttribute('transform', 'translate(0, -' + total_tick_height / ticks_length + ')');
 
-    svg.appendChild(line_g);
-    svg.appendChild(text_g);
+    if (existing_group.length < 1) {
+      svg.appendChild(line_g);
+      svg.appendChild(text_g);
+    }
 
   },
 
