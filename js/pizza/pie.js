@@ -109,9 +109,15 @@ $.extend(Pizza, {
       } else {
         path.setAttribute('d', d);
       }
-      path.setAttribute('data-cx', cx);
-      path.setAttribute('data-cy', cy);
-      path.setAttribute('data-id', 's' + i);
+
+      this.set_attr(path, {
+        fill: data[i].color,
+        stroke: settings.stroke_color,
+        'strokeWidth': settings.stroke_width,
+        'data-cx' : cx,
+        'data-cy' : cy,
+        'data-id' : 's' + i
+      });
 
       var existing_group = $('g[data-id=g' + i + ']', svg);
 

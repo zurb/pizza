@@ -60,7 +60,10 @@ $.extend(Pizza, {
         x : new_offset,
         y : 0,
         width : interval,
-        height : 0
+        height : 0,
+        fill: data[i].color,
+        stroke: settings.stroke_color,
+        'strokeWidth': settings.stroke_width
       });
 
       Snap(rect).animate({height: y}, 1500, mina[settings.animation_type]);
