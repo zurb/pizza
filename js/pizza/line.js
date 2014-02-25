@@ -19,7 +19,7 @@ $.extend(Pizza, {
       total_y += data[i].y;
     }
 
-    var polyline = this.svg_obj('polyline'),
+    var polyline = this.svg_obj('path'),
         line_g = this.svg_obj('g'),
         circle_g = this.svg_obj('g');
 
@@ -29,12 +29,16 @@ $.extend(Pizza, {
           circle = this.svg_obj('circle');
 
       points += x + ',' + y + ' ';
-      this.set_attr(circle, {cx: x, cy: y,r: 4,fill: data[i.color],
-        'data-value': x + ', ' + y,
+      this.set_attr(circle, {cx: x, cy: y,r: 0,fill: data[i.color],
+        'data-value': data[i].x + ', ' + data[i].y,
         'data-tooltip': '',
-        'title': x + ', ' + y,
+        'title': data[i].x + ', ' + data[i].y,
         'class': 'has-tip tip-top',
         'data-id': 'pL' + i});
+
+      Snap(circle).animate({
+        r: 4
+      }, 1500, mina[settings.animation_type]);
 
       this.animate(circle, x, y, settings, 2);
 
@@ -48,11 +52,34 @@ $.extend(Pizza, {
       this.assemble_grid_x(svg, min_x, max_x, width, height, settings);
       this.assemble_grid_y(svg, min_y, max_y, width, height, settings);
     }
+    var v = this.points_to_path(points),
+        v_l = v.length,
+        v_i = 1,
+        v_offset = 'M0,0,L0 0';
 
-    this.set_attr(polyline, {points:points, fill: 'none', stroke: 'black', 'stroke-width': 2});
+    this.set_attr(polyline, {d:v_offset, fill: 'none', stroke: 'black', 'stroke-width': 2});
 
     line_g.appendChild(polyline);
     svg.appendChild(line_g);
+
+
+    function line_anim(l, v, v_l, v_i, v_offset, start, duration) {
+      var n_offset = [v_offset, v[v_i]].join(' '),
+          total = (+ new Date()) - start,
+          step = (duration - total) / v.length;
+
+      l.animate({
+        d: n_offset
+      }, step, mina.linear, function () {
+        v_offset = n_offset;
+        v_i++;
+        if (v_i > v.length) return;
+        line_anim(l, v, v_l, v_i, v_offset, start, duration);
+      });
+    }
+
+    line_anim(Snap(polyline), v, v_l, v_i, v_offset, (+ new Date()), settings.animation_speed);
+
     svg.appendChild(circle_g);
 
     return [legend, svg];
@@ -125,6 +152,13 @@ $.extend(Pizza, {
 
   },
 
+  points_to_path : function (points) {
+    var points = points.split(/\s+|,/);
+    var x0=points.shift(), y0=points.shift();
+    var pathdata = 'M'+x0+','+y0+'L'+points.join(' ');
+    return ['M'+x0+','+y0+'L'].concat(points);
+  },
+
   line_events : function () {
     $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-line-id] li', function (e) {
       var parent = $(this).parent(),
@@ -154,4 +188,5 @@ $.extend(Pizza, {
       }
     });
   }
+
 });
