@@ -9,7 +9,7 @@ var Pizza = {
     animation_speed: 500,
     always_show_text: false,
     show_grid: true,
-    bar_spacer: 50,
+    bar_spacer: 100,
     bar_intervals: 6,
     animation_type: 'elastic' // options: backin, backout, bounce, easein, 
                               //          easeinout, easeout, linear
@@ -182,14 +182,13 @@ var Pizza = {
     }
 
     if (pie) {
-      console.log(pie)
       var view_box = '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
       (width + (settings.percent_offset * 1.5)) + ' ' + 
       (width + (settings.percent_offset * 1.5));
     } else {
       var view_box = '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
-      (width + (settings.percent_offset * 1.5)) + ' ' + 
-      (height + (settings.percent_offset * 1.5));
+      (width + (settings.percent_offset * 1.6)) + ' ' + 
+      (height + (settings.percent_offset * 1.6));
     }
 
     this.set_attr(svg, {width: '100%', height: '100%', viewBox: view_box});

@@ -9,7 +9,13 @@ $.extend(Pizza, {
         base_height = container.outerHeight(),
         max = min = 0,
         total = 0,
-        interval = (base_width - (data.length * settings.bar_spacer)) / data.length;
+        spacer = settings.bar_spacer * (settings.bar_spacer/ base_width),
+        interval = (base_width - (data.length * spacer)) / data.length;
+
+    if (interval < 10) {
+      spacer = 1;
+      interval = (base_width - (data.length * spacer)) / data.length;
+    }
 
     for (var i = 0; i < data.length; i++) {
       if (max < data[i].value) max = data[i].value;
@@ -40,7 +46,7 @@ $.extend(Pizza, {
       if (current_offset === 0) {
         var new_offset = current_offset;
       } else {
-        var new_offset = current_offset + settings.bar_spacer;
+        var new_offset = current_offset + spacer;
       }
 
       this.set_attr(rect, {
