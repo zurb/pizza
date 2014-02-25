@@ -110,7 +110,8 @@ $.extend(Pizza, {
       } else {
         path.setAttribute('d', d);
       }
-
+      path.setAttribute('data-cx', cx);
+      path.setAttribute('data-cy', cy);
       path.setAttribute('data-id', 's' + i);
       var g = this.svg_obj('g');
       g.appendChild(path);
@@ -178,7 +179,7 @@ $.extend(Pizza, {
 
     $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
       var parent = $(this).parent(),
-          path = $('#' + parent.data('pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0],
+          path = $('#' + parent.attr('data-pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0],
           text = path.nextSibling,
           settings = $(this).parent().data('settings');
 
@@ -186,7 +187,7 @@ $.extend(Pizza, {
         $(path).siblings('path').each(function () {
           if (this.nodeName) {
             Snap(path).animate({
-              transform: 's1 1 ' + path.getAttribute('cx') + ' ' + path.getAttribute('cy')
+              transform: 's1 1 ' + path.getAttribute('data-cx') + ' ' + path.getAttribute('data-cy')
             }, settings.animation_speed, mina[settings.animation_type]);
             Snap($(this).next()[0]).animate({
               opacity: 0
@@ -197,7 +198,7 @@ $.extend(Pizza, {
 
       if (/enter|start/i.test(e.type)) {
         Snap(path).animate({
-          transform: 's1.05 1.05 ' + path.getAttribute('cx') + ' ' + path.getAttribute('cy')
+          transform: 's1.05 1.05 ' + path.getAttribute('data-cx') + ' ' + path.getAttribute('data-cy')
         }, settings.animation_speed, mina[settings.animation_type]);
 
         if (settings.show_text) {
@@ -207,7 +208,7 @@ $.extend(Pizza, {
         }
       } else {
         Snap(path).animate({
-          transform: 's1 1 ' + path.getAttribute('cx') + ' ' + path.getAttribute('cy')
+          transform: 's1 1 ' + path.getAttribute('data-cx') + ' ' + path.getAttribute('data-cy')
         }, settings.animation_speed, mina[settings.animation_type]);
         Snap(text).animate({
           opacity: 0

@@ -56,7 +56,7 @@ $.extend(Pizza, {
         height : 0
       });
 
-      Snap(rect).animate({height: y}, 3000, mina[settings.animation_type]);
+      Snap(rect).animate({height: y}, 1500, mina[settings.animation_type]);
 
       current_offset = new_offset + interval;
 

@@ -242,8 +242,7 @@ var Pizza = {
   set_attr : function (node, attrs) {
 
     for (attr in attrs) {
-      try {node.setAttribute(attr, attrs[attr]);}
-      catch (err) {}
+      node.setAttribute(attr, attrs[attr]);
     }
 
     return this;
