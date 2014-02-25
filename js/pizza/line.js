@@ -109,8 +109,8 @@ $.extend(Pizza, {
 
     while (i--) {
       if (existing_group.length > 0) {
-        var line = $('line[data-id=l' + i + ']')[0],
-            text = $('text[data-id=t' + i + ']')[0];
+        var line = $('line[data-id=l' + i + ']', line_g)[0],
+            text = $('text[data-id=t' + i + ']', text_g)[0];
       } else {
         var line = this.svg_obj('line'),
             text = this.svg_obj('text');
