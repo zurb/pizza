@@ -85,7 +85,8 @@ $.extend(Pizza, {
   },
 
   assemble_grid_x : function (svg, min, max, width, height, settings) {
-    var text_g = this.svg_obj('g'),
+    var line_g = this.svg_obj('g'),
+        text_g = this.svg_obj('g'),
         ticks = this.ticks(min, max, settings.bar_intervals).reverse(),
         ticks_length = i = ticks.length,
         total_tick_width = 0,
@@ -93,20 +94,33 @@ $.extend(Pizza, {
 
     while (i--) {
       var line_width = total_tick_width + interval,
+          line = this.svg_obj('line'),
           text = this.svg_obj('text');
 
-      this.set_attr(text, {
-        y: height + 20,
-        x: line_width - interval,
-        'text-anchor': 'middle'
-      });
+      this.set_attr(line, {
+          x1 : line_width,
+          x2 : line_width,
+          y1 : 0,
+          y2 : height,
+          stroke : 'gray',
+          'stroke-width' : 1,
+          'stroke-dasharray' : '5,5'
+        })
+        .set_attr(text, {
+          y: height + 20,
+          x: line_width - interval,
+          'text-anchor': 'middle'
+        });
 
       text.innerHTML = ticks[i];
 
       text_g.appendChild(text);
+      line_g.appendChild(line);
       total_tick_width = line_width;
     }
 
+    line_g.setAttribute('transform', 'translate(-' + interval + ', 0)');
+    svg.appendChild(line_g);
     svg.appendChild(text_g);
   },
 
@@ -128,7 +142,8 @@ $.extend(Pizza, {
           y1 : line_height,
           y2 : line_height,
           stroke : 'gray',
-          'stroke-width' : 1
+          'stroke-width' : 1,
+          'stroke-dasharray' : '5,5'
         })
         .set_attr(text, {
           x : -5,

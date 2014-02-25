@@ -81,7 +81,8 @@ $.extend(Pizza, {
           y1 : line_height,
           y2 : line_height,
           stroke : 'gray',
-          'stroke-width' : 1
+          'stroke-width' : 1,
+          'stroke-dasharray' : '5,5'
         })
         .set_attr(text, {
           x : -5,
