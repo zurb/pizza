@@ -97,8 +97,6 @@ $.extend(Pizza, {
       }
 
       text.setAttribute('data-id', 's' + i);
-      path.setAttribute('data-cx', cx);
-      path.setAttribute('data-cy', cy);
 
       if (settings.donut) {
         this.annular_sector(path, {
@@ -109,10 +107,6 @@ $.extend(Pizza, {
       } else {
         path.setAttribute('d', d);
       }
-
-      path.setAttribute('fill', data[i].color);
-      path.setAttribute('stroke', settings.stroke_color);
-      path.setAttribute('strokeWidth', settings.stroke_width);
 
       path.setAttribute('data-id', 's' + i);
       var g = this.svg_obj('g');
@@ -189,7 +183,7 @@ $.extend(Pizza, {
         $(path).siblings('path').each(function () {
           if (this.nodeName) {
             Snap(path).animate({
-              transform: 's1 1 ' + path.getAttribute('data-cx') + ' ' + path.getAttribute('data-cy')
+              transform: 's1 1 ' + path.getAttribute('cx') + ' ' + path.getAttribute('cy')
             }, settings.animation_speed, mina[settings.animation_type]);
             Snap($(this).next()[0]).animate({
               opacity: 0
@@ -200,7 +194,7 @@ $.extend(Pizza, {
 
       if (/enter|start/i.test(e.type)) {
         Snap(path).animate({
-          transform: 's1.05 1.05 ' + path.getAttribute('data-cx') + ' ' + path.getAttribute('data-cy')
+          transform: 's1.05 1.05 ' + path.getAttribute('cx') + ' ' + path.getAttribute('cy')
         }, settings.animation_speed, mina[settings.animation_type]);
 
         if (settings.show_text) {
@@ -210,7 +204,7 @@ $.extend(Pizza, {
         }
       } else {
         Snap(path).animate({
-          transform: 's1 1 ' + path.getAttribute('data-cx') + ' ' + path.getAttribute('data-cy')
+          transform: 's1 1 ' + path.getAttribute('cx') + ' ' + path.getAttribute('cy')
         }, settings.animation_speed, mina[settings.animation_type]);
         Snap(text).animate({
           opacity: 0

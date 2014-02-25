@@ -20,6 +20,7 @@ $.extend(Pizza, {
     var existing_group = $('g', svg);
 
     if (existing_group.length > 0) {
+      return [legend, svg];
       $(existing_group[0]).children().remove();
       var g = existing_group[0];
     } else {
@@ -27,10 +28,8 @@ $.extend(Pizza, {
     }
 
     if (settings.show_grid) {
-      this.assemble_grid(g, svg, min, max, base_width, base_height, settings);
+      this.assemble_grid(svg, min, max, base_width, base_height, settings);
     }
-
-    // svg.node.setAttribute('preserveAspectRatio', 'none');
 
     g.setAttribute('transform', 'translate(0, ' + (base_height) +') scale(1, -1)');
 
@@ -48,11 +47,10 @@ $.extend(Pizza, {
         x : new_offset,
         y : 0,
         width : interval,
-        height : y,
-        fill : data[i].color,
-        stroke : '#222222',
-        'stroke-width' : 2
+        height : 0
       });
+
+      Snap(rect).animate({height: y}, 3000, mina[settings.animation_type]);
 
       current_offset = new_offset + interval;
 
@@ -64,40 +62,48 @@ $.extend(Pizza, {
     return [legend, svg];
   },
 
-  assemble_grid : function (g, svg, min, max, width, height, settings) {
-    var ticks = this.ticks(min, max, settings.bar_intervals),
+  assemble_grid : function (svg, min, max, width, height, settings) {
+    var line_g = this.svg_obj('g'),
+        text_g = this.svg_obj('g'),
+        ticks = this.ticks(min, max, settings.bar_intervals),
         ticks_length = i = ticks.length,
+        interval = height/(ticks_length-1),
         total_tick_height = 0;
 
     while (i--) {
-      var line_height = total_tick_height + (height/(ticks_length-1)),
+      var line_height = total_tick_height + interval,
           line = this.svg_obj('line'),
           text = this.svg_obj('text');
 
       this.set_attr(line, {
-          x1: 0,
-          x2: width,
-          y1: line_height,
-          y2: line_height,
-          stroke: 'gray',
-          'stroke-width' : 1
+          x1 : 0,
+          x2 : width,
+          y1 : line_height,
+          y2 : line_height,
+          stroke : 'gray',
+          'stroke-width' : 1,
+          'stroke-dasharray' : '5,5'
         })
         .set_attr(text, {
-          x: -25,
-          y: line_height,
-          transform : 'rotate(-180 -5 260) scale(-1 1)'
-        })
+          x : -5,
+          y : line_height,
+          'text-anchor': 'end'
+        });
 
       text.innerHTML = ticks[i];
 
-      g.appendChild(line);
-      g.appendChild(text);
+      line_g.appendChild(line);
+      text_g.appendChild(text);
       total_tick_height = line_height;
     }
 
+    line_g.setAttribute('transform', 'translate(0, -' + total_tick_height / ticks_length + ')');
+    text_g.setAttribute('transform', 'translate(0, -' + total_tick_height / ticks_length + ')');
+
+    svg.appendChild(line_g);
+    svg.appendChild(text_g);
+
   },
 
-  bar_events : function () {
-
-  }
+  bar_events : function () {}
 });
