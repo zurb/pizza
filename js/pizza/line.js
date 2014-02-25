@@ -62,7 +62,6 @@ $.extend(Pizza, {
     line_g.appendChild(polyline);
     svg.appendChild(line_g);
 
-
     function line_anim(l, v, v_l, v_i, v_offset, start, duration) {
       var n_offset = [v_offset, v[v_i]].join(' '),
           total = (+ new Date()) - start,

@@ -5,8 +5,6 @@ var Pizza = {
     donut: false,
     donut_inner_ratio: 0.4,   // between 0 and 1
     percent_offset: 35,       // relative to radius
-    stroke_color: 'transparent',
-    stroke_width: 0,
     show_text: true,       // show or hide the percentage on the chart.
     animation_speed: 500,
     always_show_text: false,
@@ -43,9 +41,9 @@ var Pizza = {
   events : function () {
     var self = this;
 
-    $(window).off('.pizza').on('resize.pizza', self.throttle(function () {
-      self.init();
-    }, 500));
+    // $(window).off('.pizza').on('resize.pizza', self.throttle(function () {
+    //   self.init();
+    // }, 500));
 
     this.pie_events();
     this.line_events();
@@ -182,10 +180,11 @@ var Pizza = {
       svg.height = height;
     }
 
-    this.set_attr(svg, {width: '100%', height: '100%',
-      viewBox: '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
+    var view_box = '-' + settings.percent_offset + ' -' + settings.percent_offset + ' ' + 
       (width + (settings.percent_offset * 1.5)) + ' ' + 
-      (height + (settings.percent_offset * 1.5))})
+      (height + (settings.percent_offset * 1.5));
+
+    this.set_attr(svg, {width: '100%', height: '100%', viewBox: view_box});
 
     return svg;
   },
@@ -234,8 +233,10 @@ var Pizza = {
   },
 
   set_attr : function (node, attrs) {
+
     for (attr in attrs) {
-      node.setAttribute(attr, attrs[attr]);
+      try {node.setAttribute(attr, attrs[attr]);}
+      catch (err) {}
     }
 
     return this;

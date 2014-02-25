@@ -20,6 +20,7 @@ $.extend(Pizza, {
     var existing_group = $('g', svg);
 
     if (existing_group.length > 0) {
+      return [legend, svg];
       $(existing_group[0]).children().remove();
       var g = existing_group[0];
     } else {
@@ -29,8 +30,6 @@ $.extend(Pizza, {
     if (settings.show_grid) {
       this.assemble_grid(svg, min, max, base_width, base_height, settings);
     }
-
-    // svg.node.setAttribute('preserveAspectRatio', 'none');
 
     g.setAttribute('transform', 'translate(0, ' + (base_height) +') scale(1, -1)');
 
@@ -48,11 +47,10 @@ $.extend(Pizza, {
         x : new_offset,
         y : 0,
         width : interval,
-        height : y,
-        fill : data[i].color,
-        stroke : '#222222',
-        'stroke-width' : 2
+        height : 0
       });
+
+      Snap(rect).animate({height: y}, 3000, mina[settings.animation_type]);
 
       current_offset = new_offset + interval;
 
