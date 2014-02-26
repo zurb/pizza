@@ -1,6 +1,6 @@
 ##Pizza Pie Charts
 
-Pizza is a responsive Pie chart based on the Snap SVG framework from Adobe. It focuses on easy integration via HTML markup and CSS instead of JavaScript objects, although you can pass JavaScript objects to Pizza as well.
+Pizza is a responsive pie, donut, bar, and line graph charting library based on the Snap SVG framework from Adobe. It focuses on easy integration via HTML markup and CSS instead of JavaScript objects, although you can pass JavaScript objects to Pizza as well.
 
 ### Implementation
 
@@ -53,11 +53,12 @@ Will render out `Goats 19% (32 total)` for example.
 
 ### Contributing
 
-To contribute you must have Ruby and Bundler installed on your system.
+To contribute you must have Node and Grunt installed on your system.
 
-Compiling the example:
+Compiling:
 
 ```
-bundle
-bundle exec compass watch
+npm install
+bower install
+grunt
 ```
