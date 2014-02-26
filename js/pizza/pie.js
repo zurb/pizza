@@ -125,7 +125,7 @@ $.extend(Pizza, {
         g.appendChild(text);
         svg.appendChild(g);
 
-        this.animate($(path), cx, cy, settings);
+        this.animate(Snap(path), cx, cy, settings);
       }
 
       // The next wedge begins where this one ends

@@ -58,7 +58,7 @@ $.extend(Pizza, {
         r: 4
       }, 1500, mina[settings.animation_type]);
 
-      this.animate($(circle), x, y, settings, 2);
+      this.animate(Snap(circle), x, y, settings, 2);
 
       if (existing_group.length < 1) {
         circle_g.appendChild(circle);

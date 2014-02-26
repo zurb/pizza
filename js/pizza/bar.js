@@ -74,7 +74,7 @@ $.extend(Pizza, {
 
       if (existing_group.length < 1) {
         g.appendChild(rect);
-        this.animate_bar($(rect), y, settings);
+        this.animate_bar(Snap(rect), y, settings);
       }
     }
 
@@ -90,15 +90,14 @@ $.extend(Pizza, {
         $el = $(el),
         new_y = y + 15;
 
-    $el.on('mouseenter', function (e) {
+    el.hover(function (e) {
         var path = Snap(e.target);
 
         path.animate({
           height: new_y
         }, settings.animation_speed, mina[settings.animation_type]);
 
-      })
-      .on('mouseleave', function (e) {
+      }, function (e) {
         var path = Snap(e.target);
 
         path.animate({

@@ -106,7 +106,7 @@ var Pizza = {
     var self = this,
         scale = scale || 1.05;
 
-    el.on('mouseenter', function (e) {
+    el.hover(function (e) {
         var path = Snap(e.target),
             text = Snap(path.node.nextSibling);
 
@@ -133,8 +133,7 @@ var Pizza = {
           });
         }
 
-      })
-      .on('mouseleave', function (e) {
+      }, function (e) {
         var path = Snap(e.target),
             text = Snap(path.node.nextSibling);
 
