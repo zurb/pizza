@@ -318,13 +318,13 @@ $.extend(Pizza, {
         x : new_offset,
         y : 0,
         width : interval,
-        height : 0,
+        height : y,
         fill: data[i].color,
         stroke: settings.stroke_color,
         'strokeWidth': settings.stroke_width
       });
 
-      Snap(rect).animate({height: y}, 1500, mina[settings.animation_type]);
+      // Snap(rect).animate({height: y}, 1500, mina[settings.animation_type]);
 
       current_offset = new_offset + interval;
 
@@ -332,7 +332,7 @@ $.extend(Pizza, {
         g.appendChild(rect);
       }
 
-      this.animate_bar(Snap(rect), y, settings);
+      // this.animate_bar(Snap(rect), y, settings);
     }
 
     if (existing_group.length < 1) {
@@ -433,34 +433,34 @@ $.extend(Pizza, {
   },
 
   bar_events : function () {
-    var self = this;
+    // var self = this;
 
-    $(this.scope).on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-bar-id] li', function (e) {
-      var parent = $(this).parent(),
-          path = $('#' + parent.attr('data-bar-id') + ' rect[data-id=r' + $(this).index() + ']')[0],
-          settings = $(this).parent().data('settings'),
-          new_height = parseInt(path.getAttribute('data-y'), 10) + 15;
+    // $(this.scope).on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-bar-id] li', function (e) {
+    //   var parent = $(this).parent(),
+    //       path = $('#' + parent.attr('data-bar-id') + ' rect[data-id=r' + $(this).index() + ']')[0],
+    //       settings = $(this).parent().data('settings'),
+    //       new_height = parseInt(path.getAttribute('data-y'), 10) + 15;
 
-      if (/start/i.test(e.type)) {
-        $(path).siblings('rect').each(function () {
-          if (this.nodeName) {
-            Snap(path).animate({
-              height: path.getAttribute('data-y')
-            }, settings.animation_speed, mina[settings.animation_type]);
-          }
-        });
-      }
+    //   if (/start/i.test(e.type)) {
+    //     $(path).siblings('rect').each(function () {
+    //       if (this.nodeName) {
+    //         Snap(path).animate({
+    //           height: path.getAttribute('data-y')
+    //         }, settings.animation_speed, mina[settings.animation_type]);
+    //       }
+    //     });
+    //   }
 
-      if (/enter|start/i.test(e.type)) {
-        Snap(path).animate({
-          height: new_height
-        }, settings.animation_speed, mina[settings.animation_type]);
-      } else {
-        Snap(path).animate({
-          height: path.getAttribute('data-y')
-        }, settings.animation_speed, mina[settings.animation_type]);
-      }
-    });
+    //   if (/enter|start/i.test(e.type)) {
+    //     Snap(path).animate({
+    //       height: new_height
+    //     }, settings.animation_speed, mina[settings.animation_type]);
+    //   } else {
+    //     Snap(path).animate({
+    //       height: path.getAttribute('data-y')
+    //     }, settings.animation_speed, mina[settings.animation_type]);
+    //   }
+    // });
   }
 });
 $.extend(Pizza, {
