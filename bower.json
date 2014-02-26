@@ -9,6 +9,5 @@
     "jquery": ">= 2.0.0",
     "foundation": ">= 5.1.0",
     "Snap.svg": ">= 0.2.0"
-  },
-  "private": false
+  }
 }
