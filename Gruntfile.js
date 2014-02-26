@@ -10,11 +10,10 @@ module.exports = function(grunt) {
     sass: {
       dist_compressed: {
         options: {
-          outputStyle:'compressed',
           includePaths: ['scss']
         },
         files: {
-          'dist/css/pizza.min.css': '<%= pizza.scss %>',
+          'dist/css/pizza.css': '<%= pizza.scss %>',
           'dist/css/vendor/normalize.css': 'bower_components/foundation/css/normalize.css',
           'dist/css/vendor/foundation.css': 'bower_components/foundation/css/foundation.css'
         }
