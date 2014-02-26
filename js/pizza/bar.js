@@ -46,6 +46,7 @@ $.extend(Pizza, {
       if (existing_rect.length > 0) {
         var rect = existing_rect[0];
       } else {
+        console.log('new')
         var rect = this.svg_obj('rect');
         rect.setAttribute('data-id', 'r' + i);
       }
@@ -55,6 +56,8 @@ $.extend(Pizza, {
       } else {
         var new_offset = current_offset + spacer;
       }
+
+      rect.setAttribute('data-y', y);
 
       this.set_attr(rect, {
         x : new_offset,
@@ -70,12 +73,42 @@ $.extend(Pizza, {
 
       current_offset = new_offset + interval;
 
-      g.appendChild(rect);
+      if (existing_group.length < 1) {
+        g.appendChild(rect);
+        this.animate_bar(rect, y, settings);
+      }
     }
 
-    svg.appendChild(g);
+    if (existing_group.length < 1) {
+      svg.appendChild(g);
+    }
 
     return [legend, svg];
+  },
+
+  animate_bar : function (el, y, settings) {
+    var self = this,
+        $el = $(el),
+        new_y = y + 15;
+
+    $el.on('mouseenter', function (e) {
+        var path = Snap(e.target),
+            text = Snap(path.node.nextSibling);
+
+        path.animate({
+          height: new_y
+        }, settings.animation_speed, mina[settings.animation_type]);
+
+      })
+      .on('mouseleave', function (e) {
+        var path = Snap(e.target),
+            text = Snap(path.node.nextSibling);
+
+        path.animate({
+          height: y
+        }, settings.animation_speed, mina[settings.animation_type]);
+      });
+
   },
 
   assemble_grid : function (svg, min, max, width, height, settings) {
@@ -146,5 +179,34 @@ $.extend(Pizza, {
 
   },
 
-  bar_events : function () {}
+  bar_events : function () {
+    var self = this;
+
+    $(document).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-bar-id] li', function (e) {
+      var parent = $(this).parent(),
+          path = $('#' + parent.attr('data-bar-id') + ' rect[data-id=r' + $(this).index() + ']')[0],
+          settings = $(this).parent().data('settings'),
+          new_height = parseInt(path.getAttribute('data-y'), 10) + 15;
+
+      if (/start/i.test(e.type)) {
+        $(path).siblings('rect').each(function () {
+          if (this.nodeName) {
+            Snap(path).animate({
+              height: path.getAttribute('data-y')
+            }, settings.animation_speed, mina[settings.animation_type]);
+          }
+        });
+      }
+
+      if (/enter|start/i.test(e.type)) {
+        Snap(path).animate({
+          height: new_height
+        }, settings.animation_speed, mina[settings.animation_type]);
+      } else {
+        Snap(path).animate({
+          height: path.getAttribute('data-y')
+        }, settings.animation_speed, mina[settings.animation_type]);
+      }
+    });
+  }
 });
