@@ -2,8 +2,8 @@
   "name": "pizza",
   "version": "0.2.0",
   "main": [
-    "css/pizza.css",
-    "js/pizza.js"
+    "dist/css/pizza.min.css",
+    "dist/js/pizza.js"
   ],
   "dependencies": {
     "jquery": ">= 2.0.0",
