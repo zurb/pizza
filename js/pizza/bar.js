@@ -74,7 +74,7 @@ $.extend(Pizza, {
 
       if (existing_group.length < 1) {
         g.appendChild(rect);
-        this.animate_bar(rect, y, settings);
+        this.animate_bar($(rect), y, settings);
       }
     }
 
@@ -179,7 +179,7 @@ $.extend(Pizza, {
   bar_events : function () {
     var self = this;
 
-    $(document).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-bar-id] li', function (e) {
+    $(this.scope).on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-bar-id] li', function (e) {
       var parent = $(this).parent(),
           path = $('#' + parent.attr('data-bar-id') + ' rect[data-id=r' + $(this).index() + ']')[0],
           settings = $(this).parent().data('settings'),

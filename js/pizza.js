@@ -45,6 +45,8 @@ var Pizza = {
       self.init();
     }, 500));
 
+    $(this.scope).off('.pizza');
+
     this.pie_events();
     this.line_events();
     this.bar_events();
@@ -102,10 +104,9 @@ var Pizza = {
 
   animate : function (el, cx, cy, settings, scale) {
     var self = this,
-        $el = $(el),
         scale = scale || 1.05;
 
-    $el.on('mouseenter', function (e) {
+    el.on('mouseenter', function (e) {
         var path = Snap(e.target),
             text = Snap(path.node.nextSibling);
 

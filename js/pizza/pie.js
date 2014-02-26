@@ -82,11 +82,7 @@ $.extend(Pizza, {
         text.innerHTML = visible_text;
       }
 
-      var left_offset = text.getBBox().width / 2;
-
-      text.setAttribute('x', text.getAttribute('x') - left_offset);
-
-      text.setAttribute('text-anchor', 'middle')
+      text.setAttribute('text-anchor', 'middle');
 
       if (settings.always_show_text) {
         Snap(text).animate({
@@ -129,7 +125,7 @@ $.extend(Pizza, {
         g.appendChild(text);
         svg.appendChild(g);
 
-        this.animate(path, cx, cy, settings);
+        this.animate($(path), cx, cy, settings);
       }
 
       // The next wedge begins where this one ends
@@ -187,15 +183,11 @@ $.extend(Pizza, {
   },
 
   pie_events : function () {
-    var self = this;
-
-    $(document).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
+    $(this.scope).on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
       var parent = $(this).parent(),
           path = $('#' + parent.attr('data-pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0],
           text = path.nextSibling,
           settings = $(this).parent().data('settings');
-
-      console.log('test')
 
       if (/start/i.test(e.type)) {
         $(path).siblings('path').each(function () {

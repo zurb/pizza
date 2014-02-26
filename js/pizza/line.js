@@ -58,7 +58,7 @@ $.extend(Pizza, {
         r: 4
       }, 1500, mina[settings.animation_type]);
 
-      this.animate(circle, x, y, settings, 2);
+      this.animate($(circle), x, y, settings, 2);
 
       if (existing_group.length < 1) {
         circle_g.appendChild(circle);
@@ -227,7 +227,7 @@ $.extend(Pizza, {
   },
 
   line_events : function () {
-    $(this.scope).off('.pizza').on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-line-id] li', function (e) {
+    $(this.scope).on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-line-id] li', function (e) {
       var parent = $(this).parent(),
           path = $('#' + parent.data('line-id') + ' circle[data-id="c' + $(this).index() + '"]')[0],
           settings = $(this).parent().data('settings');
