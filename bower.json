@@ -1,6 +1,6 @@
 {
   "name": "pizza",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": [
     "dist/css/pizza.min.css",
     "dist/js/pizza.js"
