@@ -195,6 +195,8 @@ $.extend(Pizza, {
           text = path.nextSibling,
           settings = $(this).parent().data('settings');
 
+      console.log('test')
+
       if (/start/i.test(e.type)) {
         $(path).siblings('path').each(function () {
           if (this.nodeName) {

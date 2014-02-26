@@ -46,7 +46,6 @@ $.extend(Pizza, {
       if (existing_rect.length > 0) {
         var rect = existing_rect[0];
       } else {
-        console.log('new')
         var rect = this.svg_obj('rect');
         rect.setAttribute('data-id', 'r' + i);
       }
@@ -92,8 +91,7 @@ $.extend(Pizza, {
         new_y = y + 15;
 
     $el.on('mouseenter', function (e) {
-        var path = Snap(e.target),
-            text = Snap(path.node.nextSibling);
+        var path = Snap(e.target);
 
         path.animate({
           height: new_y
@@ -101,8 +99,7 @@ $.extend(Pizza, {
 
       })
       .on('mouseleave', function (e) {
-        var path = Snap(e.target),
-            text = Snap(path.node.nextSibling);
+        var path = Snap(e.target);
 
         path.animate({
           height: y
