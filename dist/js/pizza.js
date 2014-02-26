@@ -330,8 +330,9 @@ $.extend(Pizza, {
 
       if (existing_group.length < 1) {
         g.appendChild(rect);
-        this.animate_bar(Snap(rect), y, settings);
       }
+
+      this.animate_bar(Snap(rect), y, settings);
     }
 
     if (existing_group.length < 1) {
