@@ -151,19 +151,9 @@ var Pizza = {
   },
 
   parse_options : function (string, percent, value) {
-    var matches = string.match(/{{(percent|value)}}/g),
-        output = '';
-
-    for (var i = 0; i < matches.length; i++) {
-
-      if (/percent/i.test(matches[i])) {
-        output = string.replace(matches[i], [Math.ceil(percent), '%'].join(''));
-      }
-
-      if (/value/i.test(matches[i])) {
-        output = output.replace(matches[i], value);
-      }
-    }
+    var percentStr = Math.ceil(percent) + '%',
+        output = string.replace(/{{ *percent *}}/ig, percentStr)
+                       .replace(/{{ *value *}}/ig, value);
 
     return output;
   },
