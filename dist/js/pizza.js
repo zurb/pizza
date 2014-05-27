@@ -151,7 +151,7 @@ var Pizza = {
   },
 
   parse_options : function (string, percent, value) {
-    var percentStr = percent.toFixed(1) + '%',
+    var percentStr = Math.ceil(percent) + '%',
         output = string.replace(/{{ *percent *}}/ig, percentStr)
                        .replace(/{{ *value *}}/ig, value);
 
@@ -402,7 +402,7 @@ $.extend(Pizza, {
           'text-anchor': 'end'
         });
 
-      text.innerHTML = ticks[i];
+      text.textContent = ticks[i];
 
       if (existing_group.length < 1) {
         line_g.appendChild(line);
@@ -592,7 +592,7 @@ $.extend(Pizza, {
         });
 
       if (existing_group.length < 1) {
-        text.innerHTML = ticks[i];
+        text.textContent = ticks[i];
         text_g.appendChild(text);
         line_g.appendChild(line);
       }
@@ -658,7 +658,7 @@ $.extend(Pizza, {
       if (existing_group.length < 1) {
         text_g.appendChild(text);
         line_g.appendChild(line);
-        text.innerHTML = ticks[i];
+        text.textContent = ticks[i];
       }
 
       total_tick_height = line_height;

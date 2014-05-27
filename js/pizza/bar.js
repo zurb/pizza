@@ -156,7 +156,7 @@ $.extend(Pizza, {
           'text-anchor': 'end'
         });
 
-      text.innerHTML = ticks[i];
+      text.textContent = ticks[i];
 
       if (existing_group.length < 1) {
         line_g.appendChild(line);

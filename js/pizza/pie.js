@@ -79,7 +79,7 @@ $.extend(Pizza, {
 
         text.setAttribute('x', cx + (r + settings.percent_offset) * Math.sin(start_angle + (angles[i] / 2)));
         text.setAttribute('y', cy - (r + settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2)));
-        text.innerHTML = visible_text;
+        text.textContent = visible_text;
       }
 
       text.setAttribute('text-anchor', 'middle');
