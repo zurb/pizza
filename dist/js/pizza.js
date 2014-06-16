@@ -1,7 +1,8 @@
 var Pizza = {
-  version : '0.2.1',
+  version : '0.2.2',  // 0.2.2 by Metrakit, add type setting and change data scope in HTML
 
   settings : {
+  	type: 'pie',
     donut: false,
     donut_inner_ratio: 0.4,   // between 0 and 1
     percent_offset: 35,       // relative to radius
@@ -21,17 +22,19 @@ var Pizza = {
     var self = this;
     this.scope = scope || document.body;
 
-    var charts = $('[data-pie-id], [data-line-id], [data-bar-id]', this.scope);
+    var charts = $('[data-chart]', this.scope);
+
+
 
     $.extend(true, this.settings, options);
 
     if (charts.length > 0) {
+    	
       charts.each(function () {
         return self.build($(this), options);
       });
-    } else if ($(this.scope).is('[data-pie-id]') 
-      || $(this.scope).is('[data-line-id]') 
-      || $(this.scope).is('[data-bar-id]')) {
+    } else if ($(this.scope).is('[data-chart]')) {
+   
       this.build($(this.scope), options);
     }
 
@@ -53,15 +56,18 @@ var Pizza = {
   },
 
   build : function(legend, options) {
+
+
+
     legend.data('settings', $.extend({}, this.settings, options, legend.data('options')));
 
     this.data(legend, options || {});
 
-    if (legend.data('pie-id')) {
+    if (legend.data('options').type == 'pie') {
       this.update_DOM(this.pie(legend));
-    } else if (legend.data('line-id')) {
+    } else if (legend.data('options').type == 'line') {
       this.update_DOM(this.line(legend));
-    } else if (legend.data('bar-id')) {
+    } else if (legend.data('options').type == 'bar') {
       this.update_DOM(this.bar(legend));
     }
   },
@@ -162,7 +168,7 @@ var Pizza = {
     var container = $(this.identifier(legend)),
         svg = $('svg', container),
         width = container.width(),
-        pie = legend.attr('data-pie-id'),
+        pie = legend.attr('data-chart'),
         height = container.height();
 
     if (svg.length > 0) {
@@ -189,7 +195,7 @@ var Pizza = {
   },
 
   identifier : function (legend) {
-    id = legend.data('pie-id') || legend.data('bar-id') || legend.data('line-id');
+    id = legend.data('chart');
     return '#' + id;
   },
 
@@ -682,7 +688,7 @@ $.extend(Pizza, {
   },
 
   line_events : function () {
-    $(this.scope).on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-line-id] li', function (e) {
+    $(this.scope).on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-chart] li', function (e) {
       var parent = $(this).parent(),
           path = $('#' + parent.data('line-id') + ' circle[data-id="c' + $(this).index() + '"]')[0],
           settings = $(this).parent().data('settings');
@@ -897,9 +903,9 @@ $.extend(Pizza, {
   },
 
   pie_events : function () {
-    $(this.scope).on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-pie-id] li', function (e) {
+    $(this.scope).on('mouseenter.pizza mouseleave.pizza touchstart.pizza', '[data-chart] li', function (e) {
       var parent = $(this).parent(),
-          path = $('#' + parent.attr('data-pie-id') + ' path[data-id="s' + $(this).index() + '"]')[0],
+          path = $('#' + parent.attr('data-chart') + ' path[data-id="s' + $(this).index() + '"]')[0],      
           text = path.nextSibling,
           settings = $(this).parent().data('settings');
 
