@@ -6,7 +6,7 @@ Pizza is a responsive pie, donut, bar, and line graph charting library based on 
 
 The first step is to create a key with a `ul` and list elements that represent each piece of the pie with a `data-pie-id` attribute pointing to the ID of your chart container.
 ```
-<ul data-pie-id="svg">
+<ul data-chart="svg" data-type="pie">
   <li data-value="60">Water Buffalo (60)</li>
   <li data-value="20">Bison (20)</li>
   <li data-value="12">Sheep (12)</li>
@@ -30,7 +30,7 @@ To initialize your charts, you can call `Pizza.init();` at the end of the body o
 You can pass options to the chart by using the `data-options` attribute on your legend:
 
 ```
-<ul data-pie-id="svg" data-options='{"donut":"true"}'>
+<ul data-chart="svg" data-type="pie" data-options='{"donut":"true"}'>
 ```
 
 Or on initialization:
