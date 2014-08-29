@@ -151,7 +151,7 @@ var Pizza = {
   },
 
   parse_options : function (string, percent, value) {
-    var percentStr = percent.toFixed(1) + '%',
+    var percentStr = Math.round(percent) + '%',
         output = string.replace(/{{ *percent *}}/ig, percentStr)
                        .replace(/{{ *value *}}/ig, value);
 

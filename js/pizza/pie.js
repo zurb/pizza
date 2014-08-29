@@ -73,7 +73,7 @@ $.extend(Pizza, {
         if (data[i].text) {
           var visible_text = this.parse_options(data[i].text, percent, data[i].value);
         } else {
-          var visible_text = Math.ceil(percent) + '%';
+          var visible_text = Math.round(percent) + '%';
         }
         var text = this.svg_obj('text');
 
