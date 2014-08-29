@@ -48,7 +48,7 @@ $.extend(Pizza, {
           y = (data[i].y / max_y) * height;
 
       points += x + ',' + y + ' ';
-      this.set_attr(circle, {cx: x, cy: y,r: 0,fill: data[i.color],
+      this.set_attr(circle, {cx: x, cy: y,r: 0,fill: data[i].color,
         'data-value': data[i].x + ', ' + data[i].y,
         'data-tooltip': '',
         'title': data[i].x + ', ' + data[i].y,
