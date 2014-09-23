@@ -402,7 +402,7 @@ $.extend(Pizza, {
           'text-anchor': 'end'
         });
 
-      text.innerHTML = ticks[i];
+      text.textContent = ticks[i];
 
       if (existing_group.length < 1) {
         line_g.appendChild(line);
@@ -503,7 +503,7 @@ $.extend(Pizza, {
           y = (data[i].y / max_y) * height;
 
       points += x + ',' + y + ' ';
-      this.set_attr(circle, {cx: x, cy: y,r: 0,fill: data[i.color],
+      this.set_attr(circle, {cx: x, cy: y,r: 0,fill: data[i].color,
         'data-value': data[i].x + ', ' + data[i].y,
         'data-tooltip': '',
         'title': data[i].x + ', ' + data[i].y,
@@ -658,7 +658,7 @@ $.extend(Pizza, {
       if (existing_group.length < 1) {
         text_g.appendChild(text);
         line_g.appendChild(line);
-        text.innerHTML = ticks[i];
+        text.textContent = ticks[i];
       }
 
       total_tick_height = line_height;
@@ -712,6 +712,7 @@ $.extend(Pizza, {
   }
 
 });
+
 $.extend(Pizza, {
   pie : function (legend) {
     // pie chart concept from JavaScript the 
@@ -787,13 +788,13 @@ $.extend(Pizza, {
         if (data[i].text) {
           var visible_text = this.parse_options(data[i].text, percent, data[i].value);
         } else {
-          var visible_text = Math.ceil(percent) + '%';
+          var visible_text = Math.round(percent) + '%';
         }
         var text = this.svg_obj('text');
 
         text.setAttribute('x', cx + (r + settings.percent_offset) * Math.sin(start_angle + (angles[i] / 2)));
         text.setAttribute('y', cy - (r + settings.percent_offset) * Math.cos(start_angle + (angles[i] / 2)));
-        text.innerHTML = visible_text;
+        text.textContent = visible_text;
       }
 
       text.setAttribute('text-anchor', 'middle');

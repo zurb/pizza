@@ -203,7 +203,7 @@ $.extend(Pizza, {
       if (existing_group.length < 1) {
         text_g.appendChild(text);
         line_g.appendChild(line);
-        text.innerHTML = ticks[i];
+        text.textContent = ticks[i];
       }
 
       total_tick_height = line_height;
