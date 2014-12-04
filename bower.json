@@ -1,8 +1,8 @@
 {
   "name": "pizza",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": [
-    "dist/css/pizza.min.css",
+    "dist/css/pizza.css",
     "dist/js/pizza.js"
   ],
   "dependencies": {
