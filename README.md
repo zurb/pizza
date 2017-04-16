@@ -1,4 +1,4 @@
-##Pizza Pie Charts
+## Pizza Pie Charts
 
 Pizza is a responsive pie, donut, bar, and line graph charting library based on the Snap SVG framework from Adobe. It focuses on easy integration via HTML markup and CSS instead of JavaScript objects, although you can pass JavaScript objects to Pizza as well.
 
